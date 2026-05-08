@@ -1,8 +1,8 @@
 import { ArrowRight } from "lucide-react"
-import { Recommendation } from "@/lib/types"
+import { ToolRecommendation } from "@/lib/types"
 import { formatCurrency } from "@/lib/utils"
 
-export default function RecommendationRow({ rec }: { rec: Recommendation }) {
+export default function RecommendationRow({ rec }: { rec: ToolRecommendation }) {
   const getPriorityColor = () => {
     switch (rec.priority) {
       case "high": return "bg-primary"
