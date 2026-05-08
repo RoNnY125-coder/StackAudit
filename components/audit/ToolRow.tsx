@@ -1,0 +1,130 @@
+"use client"
+
+import { useState } from "react"
+import { ToolCatalogEntry, ToolEntry } from "@/lib/types"
+import { ChevronDown, ChevronUp, Plus } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+
+interface ToolRowProps {
+  tool: ToolCatalogEntry
+  entry?: ToolEntry
+  onChange: (entry: ToolEntry) => void
+  onRemove: (id: string) => void
+}
+
+export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProps) {
+  const [isExpanded, setIsExpanded] = useState(!!entry)
+
+  const isChecked = !!entry
+
+  const toggleChecked = () => {
+    if (isChecked) {
+      onRemove(tool.id)
+      setIsExpanded(false)
+    } else {
+      onChange({
+        id: tool.id,
+        name: tool.name,
+        category: tool.category,
+        monthlySpend: tool.defaultPrice,
+        seats: 1,
+        plan: tool.plans[0],
+        usageScore: 5
+      })
+      setIsExpanded(true)
+    }
+  }
+
+  const updateField = (field: keyof ToolEntry, value: any) => {
+    if (!entry) return
+    let newSpend = entry.monthlySpend
+    if (field === 'seats') {
+       newSpend = value * tool.defaultPrice
+    }
+    onChange({ ...entry, [field]: value, monthlySpend: newSpend })
+  }
+
+  return (
+    <div className="bg-surface-container-low border border-outline-variant rounded mb-2 overflow-hidden">
+      <div 
+        className="flex items-center justify-between p-3 cursor-pointer hover:bg-surface-container transition-colors"
+        onClick={() => {
+          if (isChecked) setIsExpanded(!isExpanded)
+          else toggleChecked()
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <Checkbox 
+            checked={isChecked} 
+            onCheckedChange={toggleChecked} 
+            onClick={(e) => e.stopPropagation()}
+            className="border-outline-variant data-[state=checked]:bg-primary data-[state=checked]:text-on-primary"
+          />
+          <span className="font-bold text-on-surface">{tool.name}</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="font-mono text-on-surface-variant text-sm">
+            {isChecked ? `$${entry?.monthlySpend}/mo` : '—'}
+          </span>
+          <button 
+            className="text-on-surface-variant hover:text-on-surface flex items-center gap-1 text-sm"
+            onClick={(e) => {
+              e.stopPropagation()
+              if (isChecked) setIsExpanded(!isExpanded)
+              else toggleChecked()
+            }}
+          >
+            {isChecked ? (isExpanded ? <><ChevronUp className="w-4 h-4" /> collapse</> : <><ChevronDown className="w-4 h-4" /> expand</>) : <><Plus className="w-4 h-4" /> add</>}
+          </button>
+        </div>
+      </div>
+
+      {isExpanded && isChecked && entry && (
+        <div className="p-4 border-t border-outline-variant/50 bg-surface-container-lowest grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="space-y-1">
+            <label className="text-xs text-on-surface-variant font-mono uppercase">Seats</label>
+            <Input 
+              type="number" 
+              min={1} 
+              value={entry.seats} 
+              onChange={(e) => updateField('seats', parseInt(e.target.value) || 1)}
+              className="h-8 bg-surface border-outline-variant focus-visible:ring-primary"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs text-on-surface-variant font-mono uppercase">Plan</label>
+            <Select value={entry.plan} onValueChange={(val) => { if (val) updateField('plan', val) }}>
+              <SelectTrigger className="h-8 bg-surface border-outline-variant focus:ring-primary">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {tool.plans.map(plan => (
+                  <SelectItem key={plan} value={plan}>{plan}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs text-on-surface-variant font-mono uppercase">
+              Used Daily ({entry.usageScore}/10)
+            </label>
+            <input 
+              type="range" 
+              min={0} 
+              max={10} 
+              value={entry.usageScore}
+              onChange={(e) => updateField('usageScore', parseInt(e.target.value))}
+              className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary"
+            />
+            <div className="flex justify-between text-[10px] text-on-surface-variant">
+              <span>Rarely</span>
+              <span>Always</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

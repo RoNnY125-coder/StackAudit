@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: #0e1513;
+  --color-surface: #0e1513;
+  --color-surface-dim: #0e1513;
+  --color-surface-bright: #343b39;
+  --color-surface-container-lowest: #090f0e;
+  --color-surface-container-low: #161d1b;
+  --color-surface-container: #1a211f;
+  --color-surface-container-high: #252b2a;
+  --color-surface-container-highest: #2f3634;
+  --color-surface-variant: #2f3634;
+  --color-on-surface: #dde4e1;
+  --color-on-surface-variant: #bbcac6;
+  --color-on-background: #dde4e1;
+  --color-inverse-surface: #dde4e1;
+  --color-inverse-on-surface: #2b3230;
+  --color-outline: #859490;
+  --color-outline-variant: #3c4947;
+  --color-primary: #4fdbc8;
+  --color-on-primary: #003731;
+  --color-primary-container: #14b8a6;
+  --color-on-primary-container: #00423b;
+  --color-primary-fixed: #71f8e4;
+  --color-primary-fixed-dim: #4fdbc8;
+  --color-on-primary-fixed: #00201c;
+  --color-on-primary-fixed-variant: #005048;
+  --color-inverse-primary: #006b5f;
+  --color-surface-tint: #4fdbc8;
+  --color-secondary: #c8c5cf;
+  --color-on-secondary: #303037;
+  --color-secondary-container: #4b4a53;
+  --color-on-secondary-container: #bdbac4;
+  --color-secondary-fixed: #e4e1eb;
+  --color-secondary-fixed-dim: #c8c5cf;
+  --color-on-secondary-fixed: #1b1b22;
+  --color-on-secondary-fixed-variant: #47464e;
+  --color-tertiary: #ffb59e;
+  --color-on-tertiary: #5e1800;
+  --color-tertiary-container: #f38764;
+  --color-on-tertiary-container: #6c2106;
+  --color-tertiary-fixed: #ffdbd0;
+  --color-tertiary-fixed-dim: #ffb59e;
+  --color-on-tertiary-fixed: #3a0b00;
+  --color-on-tertiary-fixed-variant: #7c2d11;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  /* Additional shadcn base variables for compatibility */
+  --color-foreground: #dde4e1;
+  --color-muted: #1a211f;
+  --color-muted-foreground: #bbcac6;
+  --color-popover: #0e1513;
+  --color-popover-foreground: #dde4e1;
+  --color-card: #0e1513;
+  --color-card-foreground: #dde4e1;
+  --color-border: #3c4947;
+  --color-input: #3c4947;
+  --color-ring: #4fdbc8;
+
+  --font-sans: "Inter", "system-ui", "sans-serif";
+  --font-mono: "'JetBrains Mono'", "'Fira Code'", "monospace";
+
+  --text-display: 4.5rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 600;
+
+  --text-h1: 2rem;
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.04em;
+  --text-h1--font-weight: 600;
+
+  --text-h2: 1.5rem;
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.03em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.4;
+  --text-h3--letter-spacing: -0.02em;
+  --text-h3--font-weight: 600;
+
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.5;
+  --text-body--letter-spacing: 0em;
+  --text-body--font-weight: 400;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.02em;
+  --text-label--font-weight: 500;
+
+  --text-code: 0.8125rem;
+  --text-code--line-height: 1.6;
+  --text-code--letter-spacing: 0em;
+  --text-code--font-weight: 400;
+
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+
+  --spacing-gutter: 1rem;
+  --spacing-margin: 1.5rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  * {
+    @apply border-outline-variant;
+  }
+  body {
+    @apply bg-background text-on-surface antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    @apply bg-primary-container text-on-primary-container;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+}
+
+/* Ticker marquee animation */
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 20s linear infinite;
+  will-change: transform;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
