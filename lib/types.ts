@@ -1,3 +1,4 @@
+// ── Form hook types (used by SpendForm and ToolRow) ──────────────────────────
 export interface ToolCatalogEntry {
   id: string
   name: string
@@ -13,22 +14,55 @@ export interface ToolEntry {
   monthlySpend: number
   seats: number
   plan: string
-  usageScore: number  // 0-10
+  usageScore: number
 }
 
-export interface Recommendation {
+// ── Audit engine types ────────────────────────────────────────────────────────
+export type UseCase = "coding" | "writing" | "data" | "research" | "mixed"
+
+export type ToolName =
+  | "cursor"
+  | "github_copilot"
+  | "claude"
+  | "chatgpt"
+  | "anthropic_api"
+  | "openai_api"
+  | "gemini"
+  | "windsurf"
+
+export type EngineToolEntry = {
+  tool: ToolName
+  enabled: boolean
+  plan: string
+  monthlySpend: number
+  seats: number
+}
+
+export type FormState = {
+  teamSize: number
+  useCase: string
+  tools: ToolEntry[]
+}
+
+export type ToolRecommendation = {
   tool: string
-  action: string
+  currentPlan: string
+  currentSpend: number
+  recommendedAction: string
+  projectedSpend: number
   monthlySavings: number
-  priority: "high" | "medium" | "low"
-  reasoning: string
+  annualSavings: number
+  reason: string
+  status: "overspending" | "optimal" | "switch"
 }
 
-export interface AuditResult {
+export type AuditResult = {
+  recommendations: ToolRecommendation[]
   totalMonthlySavings: number
   totalAnnualSavings: number
-  recommendations: Recommendation[]
-  aiAnalysis: string
+  teamSize: number
+  useCase: string
   shareSlug: string
   generatedAt: string
+  aiAnalysis: string
 }
