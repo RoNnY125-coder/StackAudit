@@ -34,9 +34,14 @@ export async function POST(request: Request) {
 
     let aiAnalysis = ""
     try {
+      const GEMINI_KEY = process.env.GEMINI_API_KEY
+      if (!GEMINI_KEY) {
+        throw new Error("GEMINI_API_KEY missing")
+      }
+      
       const geminiPrompt = `You are an AI spend analyst. Based on this audit data, write a 100-word personalized summary for a startup founder. Team size: ${teamSize}. Use case: ${useCase}. Total monthly savings found: $${auditResult.totalMonthlySavings}. Top recommendations: ${auditResult.recommendations.slice(0,3).map(r => r.tool + ': ' + r.recommendedAction).join(', ')}. Be specific, encouraging, and actionable. Do not use bullet points.`
       
-      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

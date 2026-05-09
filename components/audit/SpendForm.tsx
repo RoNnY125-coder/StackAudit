@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuditForm } from "@/hooks/useAuditForm"
 import { TOOL_CATALOG } from "@/lib/mock-data"
@@ -24,6 +24,23 @@ export default function SpendForm() {
       router.push("/audit/results")
     }
   }
+
+  const [loadingText, setLoadingText] = useState("Analyzing your stack...")
+
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingText("Analyzing your stack...")
+      return
+    }
+    
+    const timer1 = setTimeout(() => setLoadingText("Calculating savings..."), 1000)
+    const timer2 = setTimeout(() => setLoadingText("Generating recommendations..."), 2000)
+    
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+    }
+  }, [isLoading])
 
   const [customTools, setCustomTools] = useState<ToolCatalogEntry[]>([])
   const [addingToCategory, setAddingToCategory] = useState<string | null>(null)
@@ -139,7 +156,7 @@ export default function SpendForm() {
           className="w-full bg-primary-container text-on-primary-container font-bold px-4 py-3 rounded hover:brightness-110 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex justify-center items-center gap-2"
         >
           {isLoading ? (
-            <><Loader2 className="w-5 h-5 animate-spin" /> Analyzing...</>
+            <><Loader2 className="w-5 h-5 animate-spin" /> {loadingText}</>
           ) : (
             <>Run Audit →</>
           )}

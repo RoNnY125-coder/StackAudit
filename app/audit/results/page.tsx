@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Download, Save } from "lucide-react"
 import { AuditResult } from "@/lib/types"
@@ -14,16 +15,16 @@ import SaveReportModal from "@/components/modals/SaveReportModal"
 export default function ResultsPage() {
   const [result, setResult] = useState<AuditResult | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const stored = sessionStorage.getItem("stackaudit_result")
     if (stored) {
       setResult(JSON.parse(stored))
     } else {
-      // Fallback to mock data if accessed directly
-      import("@/lib/mock-data").then(m => setResult(m.MOCK_AUDIT_RESULT))
+      router.push("/audit")
     }
-  }, [])
+  }, [router])
 
   if (!result) return null
 
