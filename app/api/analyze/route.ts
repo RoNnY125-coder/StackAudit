@@ -11,28 +11,51 @@ export async function POST(request: Request) {
     const form: FormState = { tools, teamSize, useCase }
     const auditResult = runAudit(form)
 
-    // Save to Supabase
-    const { data, error } = await supabaseAdmin
-      .from("audits")
-      .insert({
-        tools_json: tools,
-        savings_json: auditResult.recommendations,
-        total_monthly_savings: auditResult.totalMonthlySavings,
-      })
-      .select("id")
-      .single()
+    let shareSlug = Math.random().toString(36).slice(2, 8)
+    
+    try {
+      // Save to Supabase
+      const { data, error } = await supabaseAdmin
+        .from("audits")
+        .insert({
+          tools_json: tools,
+          savings_json: auditResult.recommendations,
+          total_monthly_savings: auditResult.totalMonthlySavings,
+        })
+        .select("id")
+        .single()
 
-    if (error) {
-      console.error("Supabase error:", error)
-      // Still return result even if save fails
-      return NextResponse.json({ ...auditResult, shareSlug: "error", generatedAt: new Date().toISOString() })
+      if (!error && data) {
+        shareSlug = data.id
+      }
+    } catch (dbError) {
+      console.error("Supabase error:", dbError)
+    }
+
+    let aiAnalysis = ""
+    try {
+      const geminiPrompt = `You are an AI spend analyst. Based on this audit data, write a 100-word personalized summary for a startup founder. Team size: ${teamSize}. Use case: ${useCase}. Total monthly savings found: $${auditResult.totalMonthlySavings}. Top recommendations: ${auditResult.recommendations.slice(0,3).map(r => r.tool + ': ' + r.recommendedAction).join(', ')}. Be specific, encouraging, and actionable. Do not use bullet points.`
+      
+      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: geminiPrompt }] }]
+        })
+      })
+      if (!geminiRes.ok) throw new Error("Gemini API failed")
+      const geminiData = await geminiRes.json()
+      aiAnalysis = geminiData.candidates[0].content.parts[0].text
+    } catch (aiError) {
+      console.error("Gemini error:", aiError)
+      aiAnalysis = generateFallbackSummary(auditResult.totalMonthlySavings, teamSize, useCase)
     }
 
     return NextResponse.json({
       ...auditResult,
-      shareSlug: data.id,
+      shareSlug,
       generatedAt: new Date().toISOString(),
-      aiAnalysis: generateFallbackSummary(auditResult.totalMonthlySavings, teamSize, useCase),
+      aiAnalysis,
     })
   } catch (error) {
     console.error(error)

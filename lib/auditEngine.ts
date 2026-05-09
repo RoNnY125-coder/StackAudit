@@ -73,6 +73,52 @@ function auditTool(entry: ToolEntry): ToolRecommendation {
     }
   }
 
+  // Vercel
+  if (id === "vercel") {
+    if (entry.plan === "Pro" && seats > 3) {
+      const savings = (seats - 3) * 20
+      return {
+        tool: entry.name, currentPlan: entry.plan, currentSpend: spend,
+        recommendedAction: "Consolidate Team Seats",
+        projectedSpend: spend - savings,
+        monthlySavings: Math.max(savings, 0),
+        annualSavings: Math.max(savings * 12, 0),
+        status: "overspending",
+        reason: "Multiple Vercel Pro seats often go unused. Consolidating to 3 core developers covers most workflows.",
+      }
+    }
+  }
+
+  // Windsurf
+  if (id === "windsurf") {
+    if (entry.plan === "Teams" && seats < 4) {
+      const savings = seats * (35 - 15)
+      return {
+        tool: entry.name, currentPlan: entry.plan, currentSpend: spend,
+        recommendedAction: "Switch to Pro plan",
+        projectedSpend: spend - savings,
+        monthlySavings: Math.max(savings, 0),
+        annualSavings: Math.max(savings * 12, 0),
+        status: "overspending",
+        reason: "Windsurf Teams premium is unnecessary for small teams. Individual Pro provides identical capabilities.",
+      }
+    }
+  }
+
+  // Datadog
+  if (id === "datadog") {
+    const savings = spend * 0.3
+    return {
+      tool: entry.name, currentPlan: entry.plan, currentSpend: spend,
+      recommendedAction: "Audit unused features",
+      projectedSpend: spend - savings,
+      monthlySavings: savings,
+      annualSavings: savings * 12,
+      status: "review",
+      reason: "Datadog features easily expand beyond initial scope. A quick audit typically recovers 30% of spend.",
+    }
+  }
+
   // Default — optimal
   return {
     tool: entry.name,

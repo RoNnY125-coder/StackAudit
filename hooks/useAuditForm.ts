@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { ToolEntry } from "@/lib/types"
 
 export function useAuditForm() {
@@ -7,6 +7,22 @@ export function useAuditForm() {
   const [tools, setTools] = useState<Record<string, ToolEntry>>({})
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const saved = localStorage.getItem("stackaudit_form")
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (parsed.teamSize) setTeamSize(parsed.teamSize)
+        if (parsed.useCase) setUseCase(parsed.useCase)
+        if (parsed.tools) setTools(parsed.tools)
+      } catch (e) {}
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("stackaudit_form", JSON.stringify({ teamSize, useCase, tools }))
+  }, [teamSize, useCase, tools])
 
   const completionPercent = useMemo(() => {
     let score = 0

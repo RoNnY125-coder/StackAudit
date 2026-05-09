@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuditForm } from "@/hooks/useAuditForm"
 import { TOOL_CATALOG } from "@/lib/mock-data"
+import { ToolCatalogEntry } from "@/lib/types"
 import TeamContextSection from "./TeamContextSection"
 import ToolRow from "./ToolRow"
 import { Loader2 } from "lucide-react"
@@ -23,16 +25,55 @@ export default function SpendForm() {
     }
   }
 
+  const [customTools, setCustomTools] = useState<ToolCatalogEntry[]>([])
+  const [addingToCategory, setAddingToCategory] = useState<string | null>(null)
+  const [newToolName, setNewToolName] = useState("")
+  const [newToolCost, setNewToolCost] = useState("")
+  const [newToolSeats, setNewToolSeats] = useState("1")
+
+  const handleAddCustomTool = (category: string) => {
+    if (!newToolName) return
+    const id = newToolName.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    const defaultPrice = parseFloat(newToolCost) || 0
+    const seats = parseInt(newToolSeats) || 1
+    
+    const newTool: ToolCatalogEntry = {
+      id,
+      name: newToolName,
+      category: category as any,
+      defaultPrice,
+      plans: ["Custom"]
+    }
+    
+    setCustomTools(prev => [...prev, newTool])
+    
+    addOrUpdateTool({
+      id,
+      name: newToolName,
+      category: category as any,
+      plan: "Custom",
+      seats,
+      monthlySpend: defaultPrice * (category === "infrastructure" || category === "llm-apis" ? 1 : seats),
+      usageScore: 100
+    })
+    
+    setAddingToCategory(null)
+    setNewToolName("")
+    setNewToolCost("")
+    setNewToolSeats("1")
+  }
+
   const estMonthlySpend = Object.values(tools).reduce((acc, t) => acc + t.monthlySpend, 0)
   const toolCount = Object.keys(tools).length
 
   // Group tools by category
-  const devTools = TOOL_CATALOG.filter(t => t.category === "dev-tools")
-  const llmApis = TOOL_CATALOG.filter(t => t.category === "llm-apis")
-  const infraTools = TOOL_CATALOG.filter(t => t.category === "infrastructure")
-  const prodTools = TOOL_CATALOG.filter(t => t.category === "productivity")
+  const allTools = [...TOOL_CATALOG, ...customTools]
+  const devTools = allTools.filter(t => t.category === "dev-tools")
+  const llmApis = allTools.filter(t => t.category === "llm-apis")
+  const infraTools = allTools.filter(t => t.category === "infrastructure")
+  const prodTools = allTools.filter(t => t.category === "productivity")
 
-  const renderToolSection = (title: string, categoryTools: typeof TOOL_CATALOG) => (
+  const renderToolSection = (title: string, category: string, categoryTools: typeof TOOL_CATALOG) => (
     <div className="mb-8">
       <h2 className="text-h2 font-bold border-b border-outline-variant pb-2 tracking-tighter mb-4">{title}</h2>
       <div className="space-y-1">
@@ -46,9 +87,23 @@ export default function SpendForm() {
           />
         ))}
       </div>
-      <button className="w-full mt-3 border border-dashed border-outline-variant text-on-surface-variant hover:border-outline hover:text-on-surface rounded p-3 flex items-center justify-center gap-2 transition-colors">
-        <span className="font-bold">+ Add Tool</span>
-      </button>
+      {addingToCategory === category ? (
+        <div className="mt-3 p-4 border border-outline-variant rounded bg-surface-container flex flex-col gap-3">
+          <input type="text" placeholder="Tool Name" value={newToolName} onChange={e => setNewToolName(e.target.value)} className="bg-surface border border-outline-variant rounded p-2 text-on-surface" />
+          <div className="flex gap-3">
+            <input type="number" placeholder="Monthly Cost" value={newToolCost} onChange={e => setNewToolCost(e.target.value)} className="bg-surface border border-outline-variant rounded p-2 text-on-surface flex-1" />
+            <input type="number" placeholder="Seats" value={newToolSeats} onChange={e => setNewToolSeats(e.target.value)} className="bg-surface border border-outline-variant rounded p-2 text-on-surface flex-1" />
+          </div>
+          <div className="flex justify-end gap-2">
+            <button onClick={() => setAddingToCategory(null)} className="px-3 py-1 text-on-surface-variant hover:text-on-surface">Cancel</button>
+            <button onClick={() => handleAddCustomTool(category)} className="px-3 py-1 bg-primary text-on-primary rounded font-bold">Add</button>
+          </div>
+        </div>
+      ) : (
+        <button onClick={() => setAddingToCategory(category)} className="w-full mt-3 border border-dashed border-outline-variant text-on-surface-variant hover:border-outline hover:text-on-surface rounded p-3 flex items-center justify-center gap-2 transition-colors">
+          <span className="font-bold">+ Add Tool</span>
+        </button>
+      )}
     </div>
   )
 
@@ -97,10 +152,10 @@ export default function SpendForm() {
           useCase={useCase} setUseCase={setUseCase}
         />
         
-        {renderToolSection("Developer Tools", devTools)}
-        {renderToolSection("AI/LLM APIs", llmApis)}
-        {renderToolSection("Infrastructure", infraTools)}
-        {renderToolSection("Productivity", prodTools)}
+        {renderToolSection("Developer Tools", "dev-tools", devTools)}
+        {renderToolSection("AI/LLM APIs", "llm-apis", llmApis)}
+        {renderToolSection("Infrastructure", "infrastructure", infraTools)}
+        {renderToolSection("Productivity", "productivity", prodTools)}
       </div>
     </div>
   )

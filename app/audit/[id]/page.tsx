@@ -6,11 +6,12 @@ import SavingsHero from "@/components/results/SavingsHero"
 import RecommendationRow from "@/components/results/RecommendationRow"
 import CTABlock from "@/components/results/CTABlock"
 
-export default async function SharedAuditPage({ params }: { params: { id: string } }) {
+export default async function SharedAuditPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const { data, error } = await supabaseAdmin
     .from("audits")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single()
 
   if (error || !data) return notFound()

@@ -23,27 +23,27 @@ export default function SideNav({ progress }: SideNavProps) {
       <nav className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1">
           <li>
-            <Link href="#" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
+            <Link href="/dashboard" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
               Overview
             </Link>
           </li>
           <li>
-            <Link href="#" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
+            <Link href="/audit?section=infrastructure" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
               Infrastructure
             </Link>
           </li>
           <li>
-            <Link href="#" className="flex px-4 py-2 text-sm bg-secondary-container text-on-secondary-container font-bold border-l-4 border-primary transition-colors">
+            <Link href="/audit?section=saas" className="flex px-4 py-2 text-sm bg-secondary-container text-on-secondary-container font-bold border-l-4 border-primary transition-colors">
               SaaS Spend
             </Link>
           </li>
           <li>
-            <Link href="#" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
+            <Link href="/dashboard#security" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
               Security
             </Link>
           </li>
           <li>
-            <Link href="#" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
+            <Link href="/audit/results" className="flex px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors">
               Optimization
             </Link>
           </li>

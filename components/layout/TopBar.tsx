@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Bell, Settings, Menu } from "lucide-react"
-import { useAuditForm } from "@/hooks/useAuditForm"
 
 export default function TopBar() {
   const pathname = usePathname()
@@ -19,15 +18,9 @@ export default function TopBar() {
 
       {!isAudit && (
         <nav className="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
-          {["Dashboard", "Audits", "Resources"].map((item) => (
-            <Link
-              key={item}
-              href="#"
-              className="text-on-surface-variant hover:bg-surface-container px-3 py-1.5 rounded text-sm transition-colors"
-            >
-              {item}
-            </Link>
-          ))}
+          <Link href="/dashboard" className="text-on-surface-variant hover:bg-surface-container px-3 py-1.5 rounded text-sm transition-colors">Dashboard</Link>
+          <Link href="/audit" className="text-on-surface-variant hover:bg-surface-container px-3 py-1.5 rounded text-sm transition-colors">Audits</Link>
+          <Link href="/resources" className="text-on-surface-variant hover:bg-surface-container px-3 py-1.5 rounded text-sm transition-colors">Resources</Link>
         </nav>
       )}
 

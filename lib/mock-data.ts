@@ -23,40 +23,10 @@ export const MOCK_AUDIT_RESULT: AuditResult = {
   useCase: "coding",
   shareSlug: "mock-audit-2026",
   generatedAt: new Date().toISOString(),
-  aiAnalysis: "Your infrastructure spending is highly optimized at the database layer, but computing and monitoring tools show significant drift. Addressing the Datadog tier alone will recover 52% of your identified savings without impacting observability.",
+  aiAnalysis: "Your infrastructure spending is optimized at the database layer, but computing and monitoring tools show significant drift. Addressing Datadog alone recovers 52% of identified savings without impacting observability.",
   recommendations: [
-    {
-      tool: "Datadog",
-      currentPlan: "Pro",
-      currentSpend: 1800,
-      recommendedAction: "Downgrade to Standard Tier",
-      projectedSpend: 550,
-      monthlySavings: 1250,
-      annualSavings: 15000,
-      status: "overspending",
-      reason: "85% of premium features are unutilized across active projects over the last 90 days."
-    },
-    {
-      tool: "AWS EC2",
-      currentPlan: "Pay-as-you-go",
-      currentSpend: 800,
-      recommendedAction: "Terminate Idle Instances",
-      projectedSpend: 0,
-      monthlySavings: 800,
-      annualSavings: 9600,
-      status: "overspending",
-      reason: "14 instances in us-east-1 with less than 2% CPU utilization for 14 consecutive days."
-    },
-    {
-      tool: "Vercel",
-      currentPlan: "Pro",
-      currentSpend: 350,
-      recommendedAction: "Consolidate Team Seats",
-      projectedSpend: 0,
-      monthlySavings: 350,
-      annualSavings: 4200,
-      status: "overspending",
-      reason: "7 accounts have not deployed or logged in during the past 6 months."
-    },
-  ],
+    { tool: "Datadog", currentPlan: "Pro", currentSpend: 1800, recommendedAction: "Downgrade to Standard Tier", projectedSpend: 550, monthlySavings: 1250, annualSavings: 15000, status: "overspending", reason: "85% of premium features are unutilized across active projects over the last 90 days." },
+    { tool: "AWS EC2", currentPlan: "Pay-as-you-go", currentSpend: 800, recommendedAction: "Terminate Idle Instances", projectedSpend: 0, monthlySavings: 800, annualSavings: 9600, status: "overspending", reason: "14 instances with less than 2% CPU utilization for 14 consecutive days." },
+    { tool: "Vercel", currentPlan: "Pro", currentSpend: 350, recommendedAction: "Consolidate Team Seats", projectedSpend: 0, monthlySavings: 350, annualSavings: 4200, status: "overspending", reason: "7 accounts have not deployed or logged in during the past 6 months." }
+  ]
 }

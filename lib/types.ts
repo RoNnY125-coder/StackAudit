@@ -53,7 +53,7 @@ export type ToolRecommendation = {
   monthlySavings: number
   annualSavings: number
   reason: string
-  status: "overspending" | "optimal" | "switch"
+  status: "overspending" | "optimal" | "switch" | "review"
 }
 
 export type AuditResult = {
