@@ -149,3 +149,54 @@
 .ticker-track:hover {
   animation-play-state: paused;
 }
+
+/* ── Print stylesheet ────────────────────────────────────────────────────────
+   Used by the Export PDF button (window.print()) on the results page.
+   Hides UI chrome; shows only the audit content.
+────────────────────────────────────────────────────────────────────────── */
+@media print {
+  /* Hide navigation and interactive chrome */
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Clean page defaults */
+  * {
+    color-scheme: light;
+  }
+  html, body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-family: system-ui, -apple-system, sans-serif !important;
+    font-size: 12pt;
+  }
+
+  /* Reset dark theme variables to light equivalents for print */
+  :root {
+    --color-background: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-container: #f5f5f5;
+    --color-on-surface: #111111;
+    --color-on-surface-variant: #444444;
+    --color-primary: #006b5f;
+    --color-outline-variant: #cccccc;
+  }
+
+  /* Remove box shadows and border effects that don't print well */
+  [class*="drop-shadow"],
+  [class*="shadow"] {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
+  /* Ensure content isn't paginated mid-row */
+  .border-b {
+    page-break-inside: avoid;
+  }
+
+  /* Remove the fixed topbar gap */
+  main {
+    padding-top: 24px !important;
+  }
+}

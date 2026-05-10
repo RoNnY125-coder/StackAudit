@@ -20,7 +20,7 @@ export default function Hero() {
           Audit My Stack →
         </Link>
         <Link 
-          href="/audit/results" 
+          href="/audit/sample" 
           className="bg-surface-container text-on-surface hover:bg-surface-container-high px-6 py-3 rounded border border-outline-variant transition-all"
         >
           See a sample audit

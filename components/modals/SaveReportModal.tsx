@@ -39,10 +39,12 @@ export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProp
     e.preventDefault()
     setIsSubmitting(true)
     try {
+      const stored = sessionStorage.getItem("stackaudit_result")
+      const auditData = stored ? JSON.parse(stored) : null
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, company, role }),
+        body: JSON.stringify({ email, company, role, auditData }),
       })
       if (!res.ok) throw new Error("Failed")
       setIsSuccess(true)

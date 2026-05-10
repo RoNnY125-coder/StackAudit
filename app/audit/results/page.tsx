@@ -31,16 +31,18 @@ export default function ResultsPage() {
   return (
     <div className="min-h-screen bg-background">
       <main className="max-w-[680px] mx-auto px-4 py-8" id="main-content">
-        <Link 
-          href="/audit" 
+        <Link
+          href="/audit"
           className="inline-flex items-center gap-2 text-label text-on-surface-variant hover:text-primary transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Run new audit
         </Link>
 
         <SavingsHero amount={result.totalMonthlySavings} />
-        
-        <ShareBar slug={result.shareSlug} />
+
+        <div className="print:hidden">
+          <ShareBar slug={result.shareSlug} />
+        </div>
 
         <div className="border-t border-outline-variant/30 mt-4">
           {result.recommendations.map((rec, i) => (
@@ -50,16 +52,19 @@ export default function ResultsPage() {
 
         <AIAnalysis text={result.aiAnalysis} />
 
-        <CTABlock />
+        <div className="print:hidden">
+          <CTABlock />
+        </div>
 
-        <div className="flex justify-center items-center gap-4 mt-12 mb-24">
-          <button 
+        <div className="flex justify-center items-center gap-4 mt-12 mb-24 print:hidden">
+          <button
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 bg-surface-container hover:bg-surface-container-high border border-outline-variant px-6 py-3 rounded-lg font-bold text-on-surface transition-colors"
           >
             <Save className="w-5 h-5" /> Save Report
           </button>
-          <button 
+          <button
+            onClick={() => window.print()}
             className="flex items-center gap-2 bg-surface-container hover:bg-surface-container-high border border-outline-variant px-6 py-3 rounded-lg font-bold text-on-surface transition-colors"
           >
             <Download className="w-5 h-5" /> Export PDF
@@ -67,9 +72,9 @@ export default function ResultsPage() {
         </div>
       </main>
 
-      <SaveReportModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <SaveReportModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </div>
   )
