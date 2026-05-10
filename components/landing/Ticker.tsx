@@ -1,7 +1,8 @@
 export default function Ticker() {
   const tools = [
-    "Cursor", "GitHub Copilot", "Claude", "ChatGPT", 
-    "Gemini", "Windsurf", "OpenAI", "Anthropic"
+    "Cursor", "GitHub Copilot", "Claude", "ChatGPT",
+    "Gemini", "Windsurf", "OpenAI API", "Anthropic API",
+    "Datadog", "Notion", "Linear", "PagerDuty", "Vercel", "AWS"
   ]
 
   // Double array for infinite scroll

@@ -10,7 +10,7 @@ export default function Hero() {
         You're probably overpaying for AI tools.
       </h1>
       <p className="text-on-surface-variant text-lg max-w-2xl mx-auto mb-10">
-        StackAudit analyzes your AI subscriptions to find redundant features, unused seats, and cheaper alternatives. Stop wasting money on overlapping developer tools.
+        Enter your subscriptions and get an instant breakdown — free, no login required.
       </p>
       <div className="flex flex-col sm:flex-row justify-center gap-4">
         <Link 

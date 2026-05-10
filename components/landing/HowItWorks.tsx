@@ -2,18 +2,18 @@ export default function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Connect Securely",
-      description: "Grant read-only access to SSO or expense platforms."
+      title: "Enter your tools",
+      description: "Select which AI tools your team pays for and what plan you're on."
     },
     {
       number: "02",
-      title: "Instant Analysis",
-      description: "Cross-reference tools vs redundancy database + pricing."
+      title: "Get your audit",
+      description: "Our engine checks every plan against current pricing and flags where you're overpaying."
     },
     {
       number: "03",
-      title: "Take Action",
-      description: "Receive prioritized downgrades, consolidations."
+      title: "Act on it",
+      description: "Get a shareable report with exact recommendations and potential savings. No fluff."
     }
   ]
 
@@ -22,7 +22,7 @@ export default function HowItWorks() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         {steps.map((step) => (
           <div key={step.number} className="flex flex-col">
-            <span className="font-mono text-h1 text-surface-bright font-bold mb-4">{step.number}</span>
+            <span className="font-mono text-h1 text-primary font-bold mb-4">{step.number}</span>
             <h3 className="text-h3 text-on-surface font-bold mb-2">{step.title}</h3>
             <p className="text-on-surface-variant text-body">{step.description}</p>
           </div>
