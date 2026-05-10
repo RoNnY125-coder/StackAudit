@@ -21,3 +21,20 @@
 **What I learned:** The audit results being $0 earlier was user error — selecting plans that genuinely don't need changes. The engine is correct. Writing GTM and ECONOMICS forces you to think through whether the product actually makes business sense — good exercise.
 **Blockers / what I'm stuck on:** USER_INTERVIEWS.md needs real interview data — conducting calls today. Lighthouse accessibility score needs checking.
 **Plan for tomorrow:** Complete user interviews and fill USER_INTERVIEWS.md with real quotes. Write ARCHITECTURE.md Mermaid diagram. Write REFLECTION.md draft. Add honeypot to lead capture form. Final UI polish on mobile.
+
+## Day 4 — 2026-05-10
+**Hours worked:** 5
+**What I did:** Conducted user interview 2 via LinkedIn DM with co-founder of an
+early-stage job search startup. They are using Claude Pro, OpenAI API, and Gemini
+simultaneously for a small team — total spend around $27/month. Key finding: Claude
+frustration is about credit reduction not price, which is a different overspend
+pattern than the engine currently catches. Updated USER_INTERVIEWS.md with full
+notes and direct quotes. Continuing to work on final polish and remaining interviews.
+**What I learned:** Small Indian startups often mix INR and USD subscriptions —
+Gemini at 200rs alongside Claude at $20 USD. The audit engine assumes USD throughout
+which could be confusing for this user segment. Worth noting in the README as a
+known limitation.
+**Blockers / what I'm stuck on:** Still need one more user interview. REFLECTION.md
+not started yet — planning tomorrow.
+**Plan for tomorrow:** Complete interview 3. Write REFLECTION.md — all 5 questions.
+Take final screenshots for README. Do end-to-end test on live URL.

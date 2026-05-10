@@ -21,8 +21,33 @@ The audit results need a direct link next to each recommendation pointing to the
 
 ---
 
-## Interview 2 — [Coming May 10]
+## Interview 2 — A.D., Co-Founder, Early Stage Startup
+Date: 2026-05-10
+Duration: ~12 minutes
+Platform: LinkedIn DM
 
----
+**Background:**
+Co-founder of a small startup building a job search and resume optimization platform
+with ATS score checking. Small team, early stage. Using AI tools across coding,
+brainstorming, and product management simultaneously.
 
-## Interview 3 — [Coming May 10]
+**Direct Quotes:**
+- "OpenAI is way cheaper so it costs us 5-6 dollars"
+- "Claude pro for 20 dollars and Gemini I think around 200rs"
+- "For Claude? yes, because it is nowadays providing less credits. For others? no,
+  we are not overpaying for those."
+
+**Most Surprising Thing They Said:**
+He knew Claude was giving less value for money but was still paying for it. The
+frustration wasn't the price — it was the credit reduction. He felt the product
+got worse while the price stayed the same. This is a different kind of overspend
+than I expected — not wrong plan, but wrong tool for the current credit limits.
+
+**What It Changed About the Design:**
+The audit engine should flag when a tool has recently reduced its free credits or
+changed its value proposition — not just when the plan is wrong for team size.
+Also confirmed that small Indian startups are paying in INR for some tools (Gemini
+at 200rs) which means the dollar-denominated savings calculations need a note
+about currency. Added this to the backlog.
+
+## Interview 3 — 
