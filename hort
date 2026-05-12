@@ -1,0 +1,29 @@
+2026-05-10 feat: expand audit engine with 15 new scenarios and redundancy checks, fix landing page data and copy
+2026-05-10 feat: sample audit page, PDF export, real dashboard data, settings page, TopBar cleanup, SideNav cleanup, email report on save
+2026-05-10 docs: add TESTS.md documenting all 6 audit engine unit tests
+2026-05-10 docs: add ARCHITECTURE.md with Mermaid diagram, data flow, stack justification, scaling plan
+2026-05-10 test: fix Jest config for TypeScript, add 6 real audit engine unit tests — all passing
+2026-05-10 feat: wire SaveReportModal to /api/leads with real Supabase insert and honeypot
+2026-05-10 feat: add leads API route with Supabase insert and honeypot protection
+2026-05-09 docs: add GTM, ECONOMICS, LANDING_COPY, user interview 1
+2026-05-09 docs: add GTM, ECONOMICS, LANDING_COPY, DEVLOG Day 3, user interview 1
+2026-05-09 docs: add DEVLOG Day 2 entry — UI design, component build, audit engine wired
+2026-05-09 fix: expand audit engine rules, fix  savings bug, fix results page fallback, add loading states
+2026-05-09 feat: fix audit engine, wire real AI summary via Gemini, add dashboard and resources pages, fix navigation links, add custom tool input, fix params for Next.js 16, add localStorage persistence to form
+2026-05-08 fix: rewrite mock-data with correct ToolRecommendation fields
+2026-05-08 fix: update RecommendationRow to use correct ToolRecommendation field names
+2026-05-08 fix: update RecommendationRow to use ToolRecommendation type
+2026-05-08 fix: add missing Supabase client file
+2026-05-08 feat: add working copy link and Share on X to ShareBar with real audit URL
+2026-05-08 feat: add shareable audit page at /audit/[id] reading from Supabase
+2026-05-08 feat: update audit engine to work with form ToolEntry type using tool ids
+2026-05-08 feat: unify types to support both form hook and audit engine
+2026-05-08 feat: wire real audit engine into API route with Supabase save and fallback AI summary
+2026-05-08 chore: trigger fresh Vercel deployment
+2026-05-08 refactor: migrate from src/ structure to root app/ structure, add audit engine and components
+2026-05-08 feat: update types to match audit engine FormState and ToolRecommendation and add screens
+2026-05-07 docs: add DEVLOG Day 1, ARCHITECTURE skeleton, updated README
+2026-05-07 docs: add verified pricing data for all 8 AI tools with source URLs
+2026-05-07 fix: remove lint step from CI to fix directory error
+2026-05-07 chore: add GitHub Actions CI with lint and test
+2026-05-07 Initial commit from Create Next App
