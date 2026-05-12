@@ -32,6 +32,14 @@ pattern than the engine currently catches. Updated USER_INTERVIEWS.md with full
 notes and direct quotes. Continuing to work on final polish and remaining interviews.
 **What I learned:** Small Indian startups often mix INR and USD subscriptions —
 Gemini at 200rs alongside Claude at $20 USD. The audit engine assumes USD throughout
+
+## Day 5 — 2026-05-11
+**Hours worked:** 1 (been busy whole day)
+**What I did:** Reviewed the app , handled comments on linkedin post regarding stackaudit
+**What I learned:** Proffessional Communication
+**Blockers / what I'm stuck on:** nothing for now
+**Plan for tomorrow:** Write REFLECTION.md. Final screenshots for README. 
+Complete interview 3. End-to-end test on live URL.
 which could be confusing for this user segment. Worth noting in the README as a
 known limitation.
 **Blockers / what I'm stuck on:** Still need one more user interview. REFLECTION.md
