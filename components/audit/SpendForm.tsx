@@ -9,14 +9,18 @@ import TeamContextSection from "./TeamContextSection"
 import ToolRow from "./ToolRow"
 import { Loader2 } from "lucide-react"
 
-export default function SpendForm() {
+interface SpendFormProps {
+  formProps: ReturnType<typeof useAuditForm>
+}
+
+export default function SpendForm({ formProps }: SpendFormProps) {
   const router = useRouter()
   const { 
     teamSize, setTeamSize, 
     useCase, setUseCase, 
     tools, addOrUpdateTool, removeTool, 
     completionPercent, submit, isLoading, error 
-  } = useAuditForm()
+  } = formProps
 
   const handleRunAudit = async () => {
     const success = await submit()
@@ -43,12 +47,12 @@ export default function SpendForm() {
   }, [isLoading])
 
   const [customTools, setCustomTools] = useState<ToolCatalogEntry[]>([])
-  const [addingToCategory, setAddingToCategory] = useState<string | null>(null)
+  const [addingToCategory, setAddingToCategory] = useState<ToolCatalogEntry["category"] | null>(null)
   const [newToolName, setNewToolName] = useState("")
   const [newToolCost, setNewToolCost] = useState("")
   const [newToolSeats, setNewToolSeats] = useState("1")
 
-  const handleAddCustomTool = (category: string) => {
+  const handleAddCustomTool = (category: ToolCatalogEntry["category"]) => {
     if (!newToolName) return
     const id = newToolName.toLowerCase().replace(/[^a-z0-9]+/g, "-")
     const defaultPrice = parseFloat(newToolCost) || 0
@@ -57,7 +61,7 @@ export default function SpendForm() {
     const newTool: ToolCatalogEntry = {
       id,
       name: newToolName,
-      category: category as any,
+      category,
       defaultPrice,
       plans: ["Custom"]
     }
@@ -67,7 +71,7 @@ export default function SpendForm() {
     addOrUpdateTool({
       id,
       name: newToolName,
-      category: category as any,
+      category,
       plan: "Custom",
       seats,
       monthlySpend: defaultPrice * (category === "infrastructure" || category === "llm-apis" ? 1 : seats),
@@ -90,7 +94,7 @@ export default function SpendForm() {
   const infraTools = allTools.filter(t => t.category === "infrastructure")
   const prodTools = allTools.filter(t => t.category === "productivity")
 
-  const renderToolSection = (title: string, category: string, categoryTools: typeof TOOL_CATALOG) => (
+  const renderToolSection = (title: string, category: ToolCatalogEntry["category"], categoryTools: typeof TOOL_CATALOG) => (
     <div className="mb-8">
       <h2 className="text-h2 font-bold border-b border-outline-variant pb-2 tracking-tighter mb-4">{title}</h2>
       <div className="space-y-1">
