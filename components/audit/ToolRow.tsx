@@ -40,20 +40,28 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
   const updateField = (field: keyof ToolEntry, value: any) => {
     if (!entry) return
     let newSpend = entry.monthlySpend
-    if (field === 'seats') {
+    
+    // Only auto-recalculate spend on seat change for per-seat tool categories
+    const isPerSeatTool = ["dev-tools", "productivity"].includes(tool.category)
+    if (field === 'seats' && isPerSeatTool) {
        newSpend = value * tool.defaultPrice
     }
+    
     onChange({ ...entry, [field]: value, monthlySpend: newSpend })
   }
 
   return (
-    <div className="bg-surface-container-low border border-outline-variant rounded mb-2 overflow-hidden">
+    <div 
+      className="bg-surface-container-low border border-outline-variant rounded mb-2 overflow-hidden"
+      data-testid={`tool-row-${tool.id}`}
+    >
       <div 
         className="flex items-center justify-between p-3 cursor-pointer hover:bg-surface-container transition-colors"
         onClick={() => {
           if (isChecked) setIsExpanded(!isExpanded)
           else toggleChecked()
         }}
+        data-testid={`tool-row-header-${tool.id}`}
       >
         <div className="flex items-center gap-3">
           <Checkbox 
@@ -61,6 +69,7 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
             onCheckedChange={toggleChecked} 
             onClick={(e) => e.stopPropagation()}
             className="border-outline-variant data-[state=checked]:bg-primary data-[state=checked]:text-on-primary"
+            data-testid={`tool-checkbox-${tool.id}`}
           />
           <span className="font-bold text-on-surface">{tool.name}</span>
         </div>
@@ -75,6 +84,7 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
               if (isChecked) setIsExpanded(!isExpanded)
               else toggleChecked()
             }}
+            data-testid={`tool-expand-${tool.id}`}
           >
             {isChecked ? (isExpanded ? <><ChevronUp className="w-4 h-4" /> collapse</> : <><ChevronDown className="w-4 h-4" /> expand</>) : <><Plus className="w-4 h-4" /> add</>}
           </button>
@@ -91,12 +101,16 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
               value={entry.seats} 
               onChange={(e) => updateField('seats', parseInt(e.target.value) || 1)}
               className="h-8 bg-surface border-outline-variant focus-visible:ring-primary"
+              data-testid={`tool-seats-input-${tool.id}`}
             />
           </div>
           <div className="space-y-1">
             <label className="text-xs text-on-surface-variant font-mono uppercase">Plan</label>
             <Select value={entry.plan} onValueChange={(val) => { if (val) updateField('plan', val) }}>
-              <SelectTrigger className="h-8 bg-surface border-outline-variant focus:ring-primary">
+              <SelectTrigger 
+                className="h-8 bg-surface border-outline-variant focus:ring-primary"
+                data-testid={`tool-plan-select-${tool.id}`}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -117,6 +131,7 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
               value={entry.usageScore}
               onChange={(e) => updateField('usageScore', parseInt(e.target.value))}
               className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary"
+              data-testid={`tool-usage-slider-${tool.id}`}
             />
             <div className="flex justify-between text-[10px] text-on-surface-variant">
               <span>Rarely</span>
