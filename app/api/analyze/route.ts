@@ -8,9 +8,9 @@ import { randomBytes } from "crypto"
 import { createLogger } from "@/lib/logger"
 
 const AnalyzeSchema = z.object({
-  tools: z.array(z.record(z.unknown())),
-  teamSize: z.number().int().min(1).max(10000),
-  useCase: z.string().min(1).max(200),
+  tools: z.array(z.record(z.string(), z.unknown())),
+  teamSize: z.number().int().min(1),
+  useCase: z.string().min(1),
 })
 
 const log = createLogger("analyzeRoute")
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     const { tools, teamSize, useCase } = parsed.data
 
-    const form: FormState = { tools, teamSize, useCase }
+    const form: FormState = { tools: tools as any, teamSize, useCase }
     const auditResult = runAudit(form)
 
     let shareSlug = randomBytes(4).toString("hex") // 8 hex chars, crypto-safe
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       
       const geminiPrompt = `You are an AI spend analyst. Based on this audit data, write a 100-word personalized summary for a startup founder. Team size: ${teamSize}. Use case: ${useCase}. Total monthly savings found: $${auditResult.totalMonthlySavings}. Top recommendations: ${auditResult.recommendations.slice(0,3).map(r => r.tool + ': ' + r.recommendedAction).join(', ')}. Be specific, encouraging, and actionable. Do not use bullet points.`
       
-      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
