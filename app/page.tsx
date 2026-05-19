@@ -1,9 +1,11 @@
 import TopBar from "@/components/layout/TopBar"
 import Hero from "@/components/landing/Hero"
 import Ticker from "@/components/landing/Ticker"
-import HowItWorks from "@/components/landing/HowItWorks"
-import SocialProof from "@/components/landing/SocialProof"
 import Footer from "@/components/layout/Footer"
+import dynamic from "next/dynamic"
+
+const HowItWorks = dynamic(() => import("@/components/landing/HowItWorks"))
+const SocialProof = dynamic(() => import("@/components/landing/SocialProof"))
 
 export default function LandingPage() {
   return (
