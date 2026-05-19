@@ -6,6 +6,26 @@ import SavingsHero from "@/components/results/SavingsHero"
 import RecommendationRow from "@/components/results/RecommendationRow"
 import CTABlock from "@/components/results/CTABlock"
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const { data, error } = await supabaseAdmin
+    .from("audits")
+    .select("total_monthly_savings")
+    .eq("id", id)
+    .single()
+
+  const savings = !error && data ? data.total_monthly_savings : 0
+
+  return {
+    title: `AI Spend Audit — $${savings} saved`,
+    description: "See how this startup identified wasted AI tool spend with StackAudit.",
+    openGraph: {
+      title: `This startup could save $${savings}/month on AI tools`,
+      description: "Run your own free audit at stackaudit.app",
+    },
+  }
+}
+
 export default async function SharedAuditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const { data, error } = await supabaseAdmin
@@ -42,7 +62,7 @@ export default async function SharedAuditPage({ params }: { params: Promise<{ id
           ))}
         </div>
 
-        <CTABlock />
+        <CTABlock savings={totalMonthlySavings} />
 
         <div className="mt-12 text-center">
           <p className="text-on-surface-variant text-sm mb-3">

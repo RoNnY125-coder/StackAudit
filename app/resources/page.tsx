@@ -1,29 +1,37 @@
 import Link from "next/link"
 import TopBar from "@/components/layout/TopBar"
+import { FAQJsonLd } from "@/components/seo/JsonLd"
+
+export const metadata = {
+  title: "AI Tool Pricing Guide & Resources",
+  description: "Free guides on AI tool pricing, how to audit your developer tool subscriptions, and benchmarks for startup tech stacks in 2026.",
+  alternates: { canonical: "https://stackaudit.app/resources" },
+}
 
 export default function ResourcesPage() {
   return (
     <div className="min-h-screen bg-background">
       <TopBar />
       <main className="max-w-4xl mx-auto px-4 py-24">
+        <FAQJsonLd />
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-on-surface tracking-tight">Resources</h1>
           <p className="text-on-surface-variant mt-2 text-lg">Guides and benchmarks for AI tool optimization</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <Link href="/audit" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
+          <Link href="/resources/cursor-vs-copilot" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
+            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">Cursor vs GitHub Copilot 2026</h3>
+            <p className="text-sm text-on-surface-variant">Side-by-side comparison for startup engineering teams.</p>
+          </Link>
+          <Link href="/resources/ai-tool-pricing-guide" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
             <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">AI Tool Pricing Guide 2026</h3>
-            <p className="text-sm text-on-surface-variant">Complete breakdown of every major AI tool pricing tier with our recommendations.</p>
+            <p className="text-sm text-on-surface-variant">Complete breakdown of every major AI tool pricing tier.</p>
           </Link>
-          <Link href="/audit" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
+          <Link href="/audit/sample" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
             <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">How to Audit Your AI Spend</h3>
-            <p className="text-sm text-on-surface-variant">Step by step guide to identifying waste in your AI subscriptions.</p>
+            <p className="text-sm text-on-surface-variant">See a sample audit identifying waste in AI subscriptions.</p>
           </Link>
-          <a href="https://credex.rocks" target="_blank" rel="noopener noreferrer" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
-            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors flex items-center gap-1">Credex Credits Explained ↗</h3>
-            <p className="text-sm text-on-surface-variant">How discounted AI infrastructure credits work and who qualifies.</p>
-          </a>
         </div>
 
         <div className="border-t border-outline-variant pt-12">

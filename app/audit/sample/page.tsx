@@ -7,7 +7,9 @@ import AIAnalysis from "@/components/results/AIAnalysis"
 import TopBar from "@/components/layout/TopBar"
 
 export const metadata = {
-  title: "Sample Audit | StackAudit",
+  title: "Sample AI Spend Audit — See How It Works",
+  description: "See a real example of an AI spend audit for a 12-person engineering team. Find $1,840/month in potential savings across Cursor, Copilot, ChatGPT, and Vercel.",
+  alternates: { canonical: "https://stackaudit.app/audit/sample" },
 }
 
 export default function SampleAuditPage() {

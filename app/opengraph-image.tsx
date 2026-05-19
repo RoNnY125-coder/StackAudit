@@ -6,6 +6,7 @@ export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
 export default async function Image() {
+  // TODO: Create a real 1200x630 og-default.png placeholder image
   return new ImageResponse(
     (
       <div

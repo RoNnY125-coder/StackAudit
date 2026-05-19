@@ -1,28 +1,47 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { WebAppJsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "StackAudit | AI Spend Analyzer", template: "%s | StackAudit" },
-  description: "Analyze your AI tool subscriptions in 60 seconds. Find overlapping features, underutilized seats, and hidden costs.",
-  keywords: ["AI spend", "SaaS audit", "developer tools", "cost optimization"],
+  title: {
+    default: "StackAudit — Free AI Spend Audit for Startups",
+    template: "%s | StackAudit"
+  },
+  description: "Find out exactly where your startup is wasting money on AI tools. Free audit in 60 seconds. No login required. Supports Cursor, Copilot, ChatGPT, Claude, Vercel, Datadog, and more.",
+  keywords: [
+    "AI spend audit", "SaaS cost optimization", "cursor vs copilot",
+    "reduce AI tool costs", "startup tool audit", "developer tool pricing",
+    "AI subscription management", "tech stack cost analysis"
+  ],
+  authors: [{ name: "StackAudit" }],
+  creator: "StackAudit",
+  metadataBase: new URL("https://stackaudit.app"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://stackaudit.com",
+    url: "https://stackaudit.app",
     siteName: "StackAudit",
-    title: "StackAudit | AI Spend Analyzer",
-    description: "Find $2,400/mo in wasted AI tool spend. Free audit in 60 seconds.",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    title: "StackAudit — Free AI Spend Audit for Startups",
+    description: "Find $2,400/year in wasted AI tool spend. Free audit in 60 seconds. No signup.",
+    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "StackAudit — AI Spend Analyzer" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "StackAudit | AI Spend Analyzer",
-    description: "Find wasted AI spend in 60 seconds.",
+    title: "StackAudit — Free AI Spend Audit for Startups",
+    description: "Find wasted AI tool spend in 60 seconds. Free, no login.",
+    creator: "@stackaudit",
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" }
+  },
+  alternates: {
+    canonical: "https://stackaudit.app",
+  },
 };
 
 export const viewport = {
@@ -36,7 +55,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      </head>
       <body className={`${inter.className} bg-background text-on-surface antialiased`}>
+        <WebAppJsonLd />
         <a href="#main-content" className="sr-only focus:not-sr-only">Skip to main content</a>
         {children}
       </body>
