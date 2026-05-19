@@ -3,16 +3,33 @@ import { runAudit } from "@/lib/auditEngine"
 import { supabaseAdmin } from "@/lib/supabase"
 import { FormState } from "@/lib/types"
 import { generateFallbackSummary } from "@/lib/ai-summary"
+import { z } from "zod"
+import { randomBytes } from "crypto"
+import { createLogger } from "@/lib/logger"
+
+const AnalyzeSchema = z.object({
+  tools: z.array(z.any()),
+  teamSize: z.number().int().min(1).max(10000),
+  useCase: z.string().min(1).max(200),
+})
+
+const log = createLogger("analyzeRoute")
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const { tools, teamSize, useCase } = body
+    const jsonBody = await request.json()
+    const parsed = AnalyzeSchema.safeParse(jsonBody)
+
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request format", details: parsed.error }, { status: 400 })
+    }
+
+    const { tools, teamSize, useCase } = parsed.data
 
     const form: FormState = { tools, teamSize, useCase }
     const auditResult = runAudit(form)
 
-    let shareSlug = Math.random().toString(36).slice(2, 8)
+    let shareSlug = randomBytes(4).toString("hex") // 8 hex chars, crypto-safe
     
     try {
       // Save to Supabase
@@ -30,7 +47,7 @@ export async function POST(request: Request) {
         shareSlug = data.id
       }
     } catch (dbError) {
-      console.error("Supabase error:", dbError)
+      log.error("Supabase error", dbError)
     }
 
     let aiAnalysis = ""
@@ -53,7 +70,7 @@ export async function POST(request: Request) {
       const geminiData = await geminiRes.json()
       aiAnalysis = geminiData.candidates[0].content.parts[0].text
     } catch (aiError) {
-      console.error("Gemini error:", aiError)
+      log.error("Gemini error", aiError)
       aiAnalysis = generateFallbackSummary(auditResult.totalMonthlySavings, teamSize, useCase)
     }
 
@@ -64,7 +81,7 @@ export async function POST(request: Request) {
       aiAnalysis,
     })
   } catch (error) {
-    console.error(error)
+    log.error("API Error", error)
     return NextResponse.json({ error: "Failed to analyze" }, { status: 500 })
   }
 }

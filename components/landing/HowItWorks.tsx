@@ -19,6 +19,7 @@ export default function HowItWorks() {
 
   return (
     <section className="max-w-7xl mx-auto border-t border-outline-variant pt-24 mt-24 px-4 lg:px-8 mb-24">
+      <h2 className="sr-only">How StackAudit Works</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         {steps.map((step) => (
           <div key={step.number} className="flex flex-col">

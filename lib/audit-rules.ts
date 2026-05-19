@@ -25,6 +25,7 @@ function overspending(
   projected: number,
   action: string,
   reason: string,
+  affiliateUrl?: string,
 ): ToolRecommendation {
   const savings = Math.max(entry.monthlySpend - projected, 0)
   return {
@@ -37,6 +38,7 @@ function overspending(
     annualSavings: savings * 12,
     status: "overspending",
     reason,
+    affiliateUrl,
   }
 }
 
@@ -46,6 +48,7 @@ function switchPlan(
   projected: number,
   action: string,
   reason: string,
+  affiliateUrl?: string,
 ): ToolRecommendation {
   return {
     tool: entry.name,
@@ -57,6 +60,7 @@ function switchPlan(
     annualSavings: 0,
     status: "switch",
     reason,
+    affiliateUrl,
   }
 }
 
@@ -66,6 +70,7 @@ function review(
   action: string,
   reason: string,
   savingsFraction = 0,
+  affiliateUrl?: string,
 ): ToolRecommendation {
   const savings = Math.round(entry.monthlySpend * savingsFraction)
   return {
@@ -78,11 +83,12 @@ function review(
     annualSavings: savings * 12,
     status: "review",
     reason,
+    affiliateUrl,
   }
 }
 
 /** Build an "optimal" recommendation — no changes needed. */
-function optimal(entry: ToolEntry, reason?: string): ToolRecommendation {
+function optimal(entry: ToolEntry, reason?: string, affiliateUrl?: string): ToolRecommendation {
   return {
     tool: entry.name,
     currentPlan: entry.plan,
@@ -93,6 +99,7 @@ function optimal(entry: ToolEntry, reason?: string): ToolRecommendation {
     annualSavings: 0,
     status: "optimal",
     reason: reason ?? "Your current plan is cost-effective for your team size and usage pattern.",
+    affiliateUrl,
   }
 }
 
@@ -144,6 +151,7 @@ export function auditCursor(entry: ToolEntry, _useCase: string): ToolRecommendat
       16,
       "Switch to annual billing — saves 20 %",
       "Cursor Pro on annual billing costs $16/mo vs $20/mo monthly. Switch to save 20 %.",
+      "https://cursor.com/pricing?ref=stackaudit" // TODO: replace with real affiliate link
     )
   }
 
@@ -361,6 +369,7 @@ export function auditWindsurf(entry: ToolEntry, _useCase: string): ToolRecommend
       entry.monthlySpend,
       "Consider Windsurf Teams for admin controls",
       "Windsurf Teams adds admin controls and SSO worth considering at 5+ seats.",
+      "https://windsurf.com/?ref=stackaudit" // TODO: replace with real affiliate link
     )
   }
 

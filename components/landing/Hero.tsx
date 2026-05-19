@@ -6,8 +6,11 @@ export default function Hero() {
       <p className="font-mono text-primary-container text-xs uppercase mb-4 tracking-widest">
         free for founders
       </p>
-      <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-on-surface mb-6">
+      <p className="text-xl md:text-2xl font-bold tracking-tighter text-on-surface mb-2">
         You're probably overpaying for AI tools.
+      </p>
+      <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-on-surface mb-6">
+        AI Spend Audit for Startups — Free, Instant, No Login
       </h1>
       <p className="text-on-surface-variant text-lg max-w-2xl mx-auto mb-10">
         Enter your subscriptions and get an instant breakdown — free, no login required.

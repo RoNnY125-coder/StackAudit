@@ -19,7 +19,13 @@ export default function RecommendationRow({ rec }: { rec: ToolRecommendation }) 
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-on-surface-variant font-medium">{rec.tool}</span>
           <ArrowRight className="w-4 h-4 text-on-surface-variant" />
-          <span className="font-bold text-on-surface">{rec.recommendedAction}</span>
+          {rec.affiliateUrl ? (
+            <a href={rec.affiliateUrl} target="_blank" rel="noopener noreferrer sponsored" className="font-bold text-on-surface hover:text-primary transition-colors hover:underline">
+              {rec.recommendedAction} ↗
+            </a>
+          ) : (
+            <span className="font-bold text-on-surface">{rec.recommendedAction}</span>
+          )}
         </div>
         <span className="font-mono text-primary font-bold shrink-0 ml-4">
           +{formatCurrency(rec.monthlySavings)}/mo

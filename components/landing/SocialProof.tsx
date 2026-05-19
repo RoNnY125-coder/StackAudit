@@ -4,6 +4,7 @@ import Link from "next/link"
 export default function SocialProof() {
   return (
     <section className="max-w-7xl mx-auto px-4 lg:px-8 mb-24">
+      <h2 className="sr-only">What Startups Are Saying</h2>
       <div className="bg-surface-container border border-outline-variant rounded-xl overflow-hidden">
         <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant">
           <div className="px-6 py-5 text-center">

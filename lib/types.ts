@@ -103,6 +103,8 @@ export type ToolRecommendation = {
   status: "overspending" | "switch" | "review" | "optimal"
   /** One- or two-sentence explanation of the reasoning behind the recommendation. */
   reason: string
+  /** Optional affiliate/referral link for the recommended action */
+  affiliateUrl?: string
 }
 
 /**
