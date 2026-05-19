@@ -37,13 +37,13 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
     }
   }
 
-  const updateField = (field: keyof ToolEntry, value: any) => {
+  const updateField = (field: keyof ToolEntry, value: string | number) => {
     if (!entry) return
     let newSpend = entry.monthlySpend
     
     // Only auto-recalculate spend on seat change for per-seat tool categories
     const isPerSeatTool = ["dev-tools", "productivity"].includes(tool.category)
-    if (field === 'seats' && isPerSeatTool) {
+    if (field === 'seats' && isPerSeatTool && typeof value === 'number') {
        newSpend = value * tool.defaultPrice
     }
     

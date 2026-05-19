@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { runAudit } from "@/lib/auditEngine"
 import { supabaseAdmin } from "@/lib/supabase"
-import { FormState } from "@/lib/types"
+import { FormState, ToolEntry } from "@/lib/types"
 import { generateFallbackSummary } from "@/lib/ai-summary"
 import { z } from "zod"
 import { randomBytes } from "crypto"
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     const { tools, teamSize, useCase } = parsed.data
 
-    const form: FormState = { tools: tools as any, teamSize, useCase }
+    const form: FormState = { tools: tools as unknown as ToolEntry[], teamSize, useCase }
     const auditResult = runAudit(form)
 
     let shareSlug = randomBytes(4).toString("hex") // 8 hex chars, crypto-safe

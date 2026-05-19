@@ -30,35 +30,32 @@ interface PersistedForm {
   tools: Record<string, ToolEntry>
 }
 
+function loadPersistedForm(): PersistedForm | null {
+  if (typeof window === "undefined") return null
+  try {
+    const raw = localStorage.getItem("stackaudit_form")
+    if (!raw) return null
+    const saved: PersistedForm = JSON.parse(raw)
+    log.info("Restored saved form from localStorage", {
+      teamSize: saved.teamSize,
+      useCase:  saved.useCase,
+      toolCount: Object.keys(saved.tools ?? {}).length,
+    })
+    return saved
+  } catch (err) {
+    log.warn("Failed to parse saved form from localStorage — clearing", err)
+    localStorage.removeItem("stackaudit_form")
+    return null
+  }
+}
+
 export function useAuditForm() {
-  const [teamSize, setTeamSize] = useState<number>(1)
-  const [useCase,  setUseCase]  = useState<string>("Software Engineering")
-  const [tools,    setTools]    = useState<Record<string, ToolEntry>>({})
+  const [saved] = useState(loadPersistedForm)
+  const [teamSize, setTeamSize] = useState<number>(saved?.teamSize ?? 1)
+  const [useCase,  setUseCase]  = useState<string>(saved?.useCase ?? "Software Engineering")
+  const [tools,    setTools]    = useState<Record<string, ToolEntry>>(saved?.tools ?? {})
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error,     setError]     = useState<string | null>(null)
-
-  // ── Restore saved form state on mount ──────────────────────────────────────
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("stackaudit_form")
-      if (!raw) return
-
-      const saved: PersistedForm = JSON.parse(raw)
-      if (saved.teamSize) setTeamSize(saved.teamSize)
-      if (saved.useCase)  setUseCase(saved.useCase)
-      if (saved.tools)    setTools(saved.tools)
-
-      log.info("Restored saved form from localStorage", {
-        teamSize: saved.teamSize,
-        useCase:  saved.useCase,
-        toolCount: Object.keys(saved.tools ?? {}).length,
-      })
-    } catch (err) {
-      // Corrupt or outdated JSON — clear it to avoid repeated failures
-      log.warn("Failed to parse saved form from localStorage — clearing", err)
-      localStorage.removeItem("stackaudit_form")
-    }
-  }, [])
 
   // ── Persist form state whenever it changes ─────────────────────────────────
   useEffect(() => {

@@ -33,7 +33,8 @@ export default function SpendForm({ formProps }: SpendFormProps) {
 
   useEffect(() => {
     if (!isLoading) {
-      setLoadingText("Analyzing your stack...")
+      // Use a microtask to avoid synchronous setState in effect body
+      queueMicrotask(() => setLoadingText("Analyzing your stack..."))
       return
     }
     

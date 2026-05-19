@@ -33,21 +33,27 @@ export function createLogger(module: string): Logger {
   return {
     info(msg, data) {
       if (!IS_DEV) return
-      data !== undefined
-        ? console.info(`${prefix} ℹ ${msg}`, data)
-        : console.info(`${prefix} ℹ ${msg}`)
+      if (data !== undefined) {
+        console.info(`${prefix} ℹ ${msg}`, data)
+      } else {
+        console.info(`${prefix} ℹ ${msg}`)
+      }
     },
     warn(msg, data) {
       if (!IS_DEV) return
-      data !== undefined
-        ? console.warn(`${prefix} ⚠ ${msg}`, data)
-        : console.warn(`${prefix} ⚠ ${msg}`)
+      if (data !== undefined) {
+        console.warn(`${prefix} ⚠ ${msg}`, data)
+      } else {
+        console.warn(`${prefix} ⚠ ${msg}`)
+      }
     },
     error(msg, data) {
       if (!IS_DEV) return
-      data !== undefined
-        ? console.error(`${prefix} ✖ ${msg}`, data)
-        : console.error(`${prefix} ✖ ${msg}`)
+      if (data !== undefined) {
+        console.error(`${prefix} ✖ ${msg}`, data)
+      } else {
+        console.error(`${prefix} ✖ ${msg}`)
+      }
     },
   }
 }

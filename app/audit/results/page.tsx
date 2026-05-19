@@ -13,20 +13,27 @@ import CTABlock from "@/components/results/CTABlock"
 import SaveReportModal from "@/components/modals/SaveReportModal"
 import ProReportModal from "@/components/modals/ProReportModal"
 
+function getStoredResult(): AuditResult | null {
+  if (typeof window === "undefined") return null
+  try {
+    const stored = sessionStorage.getItem("stackaudit_result")
+    return stored ? JSON.parse(stored) : null
+  } catch {
+    return null
+  }
+}
+
 export default function ResultsPage() {
-  const [result, setResult] = useState<AuditResult | null>(null)
+  const [result] = useState<AuditResult | null>(getStoredResult)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isProModalOpen, setIsProModalOpen] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("stackaudit_result")
-    if (stored) {
-      setResult(JSON.parse(stored))
-    } else {
+    if (!result) {
       router.push("/audit")
     }
-  }, [router])
+  }, [result, router])
 
   if (!result) return null
 

@@ -72,23 +72,27 @@ function SettingRow({
   )
 }
 
+function loadSavedSettings(): { emailSavings: boolean; weeklyUpdates: boolean } {
+  if (typeof window === "undefined") return { emailSavings: false, weeklyUpdates: false }
+  try {
+    const saved = localStorage.getItem("stackaudit_settings")
+    if (saved) {
+      const s = JSON.parse(saved)
+      return {
+        emailSavings: typeof s.emailSavings === "boolean" ? s.emailSavings : false,
+        weeklyUpdates: typeof s.weeklyUpdates === "boolean" ? s.weeklyUpdates : false,
+      }
+    }
+  } catch {}
+  return { emailSavings: false, weeklyUpdates: false }
+}
+
 export default function SettingsPage() {
   const [darkMode, setDarkMode] = useState(true)
-  const [emailSavings, setEmailSavings] = useState(false)
-  const [weeklyUpdates, setWeeklyUpdates] = useState(false)
+  const [savedSettings] = useState(loadSavedSettings)
+  const [emailSavings, setEmailSavings] = useState(savedSettings.emailSavings)
+  const [weeklyUpdates, setWeeklyUpdates] = useState(savedSettings.weeklyUpdates)
   const [clearMsg, setClearMsg] = useState("")
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("stackaudit_settings")
-      if (saved) {
-        const s = JSON.parse(saved)
-        if (typeof s.emailSavings === "boolean") setEmailSavings(s.emailSavings)
-        if (typeof s.weeklyUpdates === "boolean") setWeeklyUpdates(s.weeklyUpdates)
-      }
-    } catch {}
-  }, [])
 
   // Persist to localStorage when toggles change
   useEffect(() => {

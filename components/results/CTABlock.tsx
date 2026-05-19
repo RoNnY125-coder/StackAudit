@@ -29,9 +29,9 @@ export default function CTABlock({ savings }: { savings: number }) {
     return (
       <div className="bg-surface border border-outline-variant rounded-xl p-6 flex flex-col sm:flex-row justify-between items-center gap-4 my-8">
         <div>
-          <h3 className="font-bold text-on-surface mb-1">You're leaving ${savings}/month on the table.</h3>
+          <h3 className="font-bold text-on-surface mb-1">You&apos;re leaving ${savings}/month on the table.</h3>
           <p className="text-on-surface-variant text-sm">
-            Book a free 20-minute call. We'll walk through your stack and show you exactly how to implement these savings.
+            Book a free 20-minute call. We&apos;ll walk through your stack and show you exactly how to implement these savings.
           </p>
         </div>
         <Link 
@@ -55,7 +55,7 @@ export default function CTABlock({ savings }: { savings: number }) {
         </p>
       </div>
       {submitted ? (
-        <div className="shrink-0 text-primary font-bold text-sm px-6 py-2">Thanks! We'll keep you posted.</div>
+        <div className="shrink-0 text-primary font-bold text-sm px-6 py-2">Thanks! We&apos;ll keep you posted.</div>
       ) : (
         <form onSubmit={handleSubmit} className="flex w-full sm:w-auto shrink-0">
           <input

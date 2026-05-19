@@ -1,6 +1,5 @@
 import TopBar from "@/components/layout/TopBar"
 import Link from "next/link"
-import { FAQJsonLd } from "@/components/seo/JsonLd"
 
 export const metadata = {
   title: "Cursor Pro vs GitHub Copilot Business: Which Is Worth It in 2026?",
@@ -78,7 +77,7 @@ export default function CursorVsCopilotPage() {
           <div className="bg-surface-container border border-outline-variant rounded-xl p-8 text-center my-12">
             <h3 className="text-2xl font-bold text-on-surface mb-4">Not sure which is right for your stack?</h3>
             <p className="text-on-surface-variant mb-6">
-              Run a free StackAudit to see if you're overpaying for your current dev tools.
+              Run a free StackAudit to see if you&apos;re overpaying for your current dev tools.
             </p>
             <Link 
               href="/audit" 

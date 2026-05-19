@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { createLogger } from "@/lib/logger"
 
 const log = createLogger("proReport")

@@ -7,7 +7,7 @@ export default function Hero() {
         free for founders
       </p>
       <p className="text-xl md:text-2xl font-bold tracking-tighter text-on-surface mb-2">
-        You're probably overpaying for AI tools.
+        You&apos;re probably overpaying for AI tools.
       </p>
       <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-on-surface mb-6">
         AI Spend Audit for Startups — Free, Instant, No Login

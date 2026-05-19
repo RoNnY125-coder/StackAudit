@@ -87,7 +87,7 @@ export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProp
                 Save your audit
               </h2>
               <p className="text-on-surface-variant text-sm">
-                We'll send the full report to your inbox.
+                We&apos;ll send the full report to your inbox.
               </p>
             </div>
 
