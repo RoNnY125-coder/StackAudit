@@ -5,6 +5,7 @@ import { supabaseAdmin } from "@/lib/supabase"
 import SavingsHero from "@/components/results/SavingsHero"
 import RecommendationRow from "@/components/results/RecommendationRow"
 import CTABlock from "@/components/results/CTABlock"
+import { ToolRecommendation } from "@/lib/types"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -57,7 +58,7 @@ export default async function SharedAuditPage({ params }: { params: Promise<{ id
         <SavingsHero amount={totalMonthlySavings} />
 
         <div className="border-t border-outline-variant/30 mt-6">
-          {recommendations.map((rec: any, i: number) => (
+          {recommendations.map((rec: ToolRecommendation, i: number) => (
             <RecommendationRow key={i} rec={rec} />
           ))}
         </div>

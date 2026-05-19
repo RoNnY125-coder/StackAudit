@@ -8,7 +8,7 @@ import { randomBytes } from "crypto"
 import { createLogger } from "@/lib/logger"
 
 const AnalyzeSchema = z.object({
-  tools: z.array(z.any()),
+  tools: z.array(z.record(z.unknown())),
   teamSize: z.number().int().min(1).max(10000),
   useCase: z.string().min(1).max(200),
 })
