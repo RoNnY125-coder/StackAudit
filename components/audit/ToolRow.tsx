@@ -14,6 +14,17 @@ interface ToolRowProps {
   onRemove: (id: string) => void
 }
 
+const PLAN_PRICES: Record<string, Record<string, number>> = {
+  "cursor": { "Hobby": 0, "Pro": 20, "Business": 40 },
+  "github-copilot": { "Individual": 10, "Pro": 10, "Business": 19, "Enterprise": 39 },
+  "windsurf": { "Free": 0, "Pro": 15, "Teams": 35 },
+  "notion": { "Free": 0, "Plus": 16, "Business": 18, "Enterprise": 35 },
+  "linear": { "Free": 0, "Standard": 8, "Plus": 16 },
+  "pagerduty": { "Free": 0, "Professional": 21, "Business": 41 },
+  "chatgpt": { "Free": 0, "Plus": 20, "Team": 30, "Enterprise": 60 },
+  "anthropic": { "API": 0, "Claude.ai Pro": 20, "Team": 25 },
+}
+
 export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProps) {
   const [isExpanded, setIsExpanded] = useState(!!entry)
 
@@ -39,15 +50,25 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
 
   const updateField = (field: keyof ToolEntry, value: string | number) => {
     if (!entry) return
-    let newSpend = entry.monthlySpend
-    
-    // Only auto-recalculate spend on seat change for per-seat tool categories
+
+    const updated = { ...entry, [field]: value }
+
     const isPerSeatTool = ["dev-tools", "productivity"].includes(tool.category)
-    if (field === 'seats' && isPerSeatTool && typeof value === 'number') {
-       newSpend = value * tool.defaultPrice
+    if (isPerSeatTool) {
+      const planPrices = PLAN_PRICES[tool.id]
+      if (planPrices) {
+        const activePlan = field === "plan" ? (value as string) : entry.plan
+        const activeSeats = field === "seats"
+          ? (typeof value === "number" ? value : parseInt(value as string) || 1)
+          : entry.seats
+        const pricePerSeat = planPrices[activePlan] ?? tool.defaultPrice
+        updated.monthlySpend = pricePerSeat * activeSeats
+      } else if (field === "seats" && typeof value === "number") {
+        updated.monthlySpend = value * tool.defaultPrice
+      }
     }
-    
-    onChange({ ...entry, [field]: value, monthlySpend: newSpend })
+
+    onChange(updated)
   }
 
   return (
@@ -93,6 +114,22 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
 
       {isExpanded && isChecked && entry && (
         <div className="p-4 border-t border-outline-variant/50 bg-surface-container-lowest grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {(tool.category === "llm-apis" || tool.category === "infrastructure") && (
+            <div className="space-y-1 sm:col-span-3">
+              <label className="text-xs text-on-surface-variant font-mono uppercase">
+                Monthly Spend ($) - enter your actual bill
+              </label>
+              <Input
+                type="number"
+                min={0}
+                value={entry.monthlySpend}
+                onChange={(e) => onChange({ ...entry, monthlySpend: parseFloat(e.target.value) || 0 })}
+                className="h-8 bg-surface border-outline-variant focus-visible:ring-primary"
+                placeholder="e.g. 250"
+                data-testid={`tool-spend-input-${tool.id}`}
+              />
+            </div>
+          )}
           <div className="space-y-1">
             <label className="text-xs text-on-surface-variant font-mono uppercase">Seats</label>
             <Input 

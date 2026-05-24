@@ -75,7 +75,9 @@ test("Total savings sums correctly across multiple tools", () => {
   }
   const result = runAudit(form)
   expect(result.totalMonthlySavings).toBeGreaterThan(0)
-  expect(result.totalAnnualSavings).toBe(result.totalMonthlySavings * 12)
+  expect(result.totalAnnualSavings).toBe(
+    result.recommendations.reduce((sum, recommendation) => sum + recommendation.annualSavings, 0)
+  )
 })
 
 test("Tool with zero spend is excluded from recommendations", () => {
@@ -89,4 +91,54 @@ test("Tool with zero spend is excluded from recommendations", () => {
   const result = runAudit(form)
   expect(result.recommendations.length).toBe(0)
   expect(result.totalMonthlySavings).toBe(0)
+})
+
+test("Low usage tools are flagged for cancellation review before tool rules", () => {
+  const form: FormState = {
+    ...baseForm,
+    tools: [{
+      id: "cursor", name: "Cursor", category: "dev-tools",
+      plan: "Business", monthlySpend: 80, seats: 2, usageScore: 2
+    }],
+  }
+  const result = runAudit(form)
+  expect(result.recommendations[0].status).toBe("review")
+  expect(result.recommendations[0].recommendedAction).toBe("Evaluate cancellation — usage is very low")
+  expect(result.recommendations[0].monthlySavings).toBe(80)
+  expect(result.recommendations[0].annualSavings).toBe(960)
+})
+
+test("Datadog Developer plan is not automatically marked overspending", () => {
+  const form: FormState = {
+    ...baseForm,
+    tools: [{
+      id: "datadog", name: "Datadog", category: "infrastructure",
+      plan: "Developer", monthlySpend: 31, seats: 1, usageScore: 5
+    }],
+  }
+  const result = runAudit(form)
+  expect(result.recommendations[0].status).toBe("optimal")
+  expect(result.recommendations[0].monthlySavings).toBe(0)
+})
+
+test("Redundancy recommendations compute savings from cancelled tool spend", () => {
+  const form: FormState = {
+    ...baseForm,
+    tools: [
+      {
+        id: "cursor", name: "Cursor", category: "dev-tools",
+        plan: "Business", monthlySpend: 120, seats: 3, usageScore: 5
+      },
+      {
+        id: "windsurf", name: "Windsurf", category: "dev-tools",
+        plan: "Teams", monthlySpend: 70, seats: 2, usageScore: 5
+      },
+    ],
+  }
+  const result = runAudit(form)
+  const redundancy = result.recommendations.find(r => r.recommendedAction.includes("primary AI coding editor"))
+  expect(redundancy).toBeDefined()
+  expect(redundancy?.tool).toBe("Cursor")
+  expect(redundancy?.monthlySavings).toBe(120)
+  expect(redundancy?.annualSavings).toBe(1440)
 })

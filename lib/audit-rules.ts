@@ -42,7 +42,7 @@ function overspending(
   }
 }
 
-/** Build a "switch plan" recommendation (0 direct savings, but better fit). */
+/** Build a "switch plan" recommendation with savings when the switch lowers spend. */
 function switchPlan(
   entry: ToolEntry,
   projected: number,
@@ -50,14 +50,15 @@ function switchPlan(
   reason: string,
   affiliateUrl?: string,
 ): ToolRecommendation {
+  const monthlySavings = Math.max(entry.monthlySpend - projected, 0)
   return {
     tool: entry.name,
     currentPlan: entry.plan,
     currentSpend: entry.monthlySpend,
     recommendedAction: action,
     projectedSpend: projected,
-    monthlySavings: 0,
-    annualSavings: 0,
+    monthlySavings,
+    annualSavings: monthlySavings * 12,
     status: "switch",
     reason,
     affiliateUrl,
@@ -123,7 +124,7 @@ export function auditCursor(entry: ToolEntry, _useCase: string): ToolRecommendat
     return overspending(
       entry,
       seats * 20,
-      `Downgrade to Cursor Pro ($20/user) — save $${Math.max(spend - seats * 20, 0)}/mo`,
+      "Downgrade to Cursor Pro ($20/user)",
       "Cursor Business adds SSO and privacy mode which are unnecessary for teams under 4. " +
       "Pro gives identical AI completion features at half the price.",
     )
@@ -144,13 +145,14 @@ export function auditCursor(entry: ToolEntry, _useCase: string): ToolRecommendat
     )
   }
 
-  // Annual billing saves 20 % for solo users on monthly Pro
-  if (entry.plan === "Pro" && seats === 1 && spend > 20) {
+  // Cursor Pro annual = $16/mo. Update if pricing changes.
+  const CURSOR_PRO_ANNUAL_PRICE = 16
+  if (entry.plan === "Pro" && seats === 1 && spend > CURSOR_PRO_ANNUAL_PRICE) {
     return overspending(
       entry,
-      16,
+      CURSOR_PRO_ANNUAL_PRICE,
       "Switch to annual billing — saves 20 %",
-      "Cursor Pro on annual billing costs $16/mo vs $20/mo monthly. Switch to save 20 %.",
+      `Cursor Pro on annual billing costs $${CURSOR_PRO_ANNUAL_PRICE}/mo vs $20/mo monthly. Switch to save ~20%.`,
       "https://cursor.com/pricing?ref=stackaudit" // TODO: replace with real affiliate link
     )
   }
@@ -190,7 +192,9 @@ export function auditGithubCopilot(entry: ToolEntry, useCase: string): ToolRecom
   }
 
   // Business policy controls are only valuable for coding teams
-  const isCodingTeam = useCase === "coding" || useCase === "Software Engineering"
+  const isCodingTeam = ["coding", "software engineering", "engineering", "development"].includes(
+    useCase.toLowerCase().trim()
+  )
   if (entry.plan === "Business" && !isCodingTeam) {
     return overspending(
       entry,
@@ -227,6 +231,16 @@ export function auditGithubCopilot(entry: ToolEntry, useCase: string): ToolRecom
     )
   }
 
+  const expectedMax = seats * 39
+  if (entry.monthlySpend > expectedMax * 1.1) {
+    return review(
+      entry,
+      "Verify billing — spend exceeds expected plan pricing",
+      `Reported spend of $${entry.monthlySpend} exceeds the expected maximum for ${seats} seats on the ${entry.plan} plan. Verify no duplicate subscriptions or billing errors.`,
+      0,
+    )
+  }
+
   return optimal(entry)
 }
 
@@ -239,12 +253,28 @@ export function auditGithubCopilot(entry: ToolEntry, useCase: string): ToolRecom
 export function auditAnthropic(entry: ToolEntry, _useCase: string): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
+  // API plan is pay-as-you-go; seat count is irrelevant.
+  if (entry.plan === "API") {
+    if (entry.monthlySpend > 500) {
+      const savings = Math.round(entry.monthlySpend * 0.25)
+      return overspending(
+        entry,
+        entry.monthlySpend - savings,
+        "Optimize prompt caching and use Claude Haiku for high-volume tasks",
+        "Anthropic API costs scale with token volume. Enable prompt caching for repeated context " +
+        "and route high-volume classification/extraction tasks to claude-haiku-3.",
+      )
+    }
+
+    return optimal(entry, "API spend is within a reasonable range. Monitor token volume as usage grows.")
+  }
+
   // Team plan below minimum seat threshold → individual Pro is cheaper
   if (entry.plan === "Team" && seats < 5) {
     return overspending(
       entry,
       seats * 20,
-      `Switch to Claude Pro per user ($20/user)`,
+      "Switch to Claude.ai Pro per user ($20/user)",
       "Claude Team has a 5-seat minimum at $25/seat = $125/mo minimum. " +
       "Under 5 users, individual Pro plans at $20/user cost less.",
     )
@@ -328,15 +358,25 @@ export function auditChatGPT(entry: ToolEntry, _useCase: string): ToolRecommenda
 export function auditVercel(entry: ToolEntry, _useCase: string): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
-  // Flag large Pro teams for seat audit
+  if (entry.plan === "Enterprise") {
+    return review(
+      entry,
+      "Negotiate annual contract and review seat count",
+      "Vercel Enterprise pricing is negotiated. Ensure you are not over-provisioned on bandwidth or build minutes.",
+      0.15,
+    )
+  }
+
   if (entry.plan === "Pro" && seats > 5) {
-    const savings = (seats - 5) * 20
+    const inactiveEstimate = Math.max(1, Math.floor(seats * 0.15))
+    const pricePerSeat = entry.monthlySpend / seats
+    const projected = Math.round((seats - inactiveEstimate) * pricePerSeat)
     return overspending(
-      { ...entry, monthlySpend: entry.monthlySpend },
-      entry.monthlySpend - savings,
-      "Audit inactive team members and remove unused seats",
-      "Vercel Pro charges per team member. Removing inactive members with no deployments " +
-      "in 90+ days reduces cost without affecting active developers.",
+      entry,
+      projected,
+      `Audit inactive team members — estimated ${inactiveEstimate} removable seat(s)`,
+      "Vercel Pro charges per team member. Removing members with no deployments in the last 90 days " +
+      "reduces cost without affecting active developers.",
     )
   }
 
@@ -388,14 +428,31 @@ export function auditWindsurf(entry: ToolEntry, _useCase: string): ToolRecommend
  * Most teams over-provision both. Estimated 35 % reduction is conservative.
  */
 export function auditDatadog(entry: ToolEntry, _useCase: string): ToolRecommendation {
-  const savings = Math.round(entry.monthlySpend * 0.35)
-  return overspending(
-    entry,
-    entry.monthlySpend - savings,
-    "Audit metric retention and host count — estimated 35 % reduction possible",
-    "Datadog charges per host and metric retention period. Most teams over-provision both. " +
-    "Reducing retention from 15 to 7 days and removing idle hosts typically saves 30–40 %.",
-  )
+  if (entry.plan === "Developer") {
+    return optimal(entry, "Developer plan is the entry tier. Optimize by reviewing metric volume and retention settings.")
+  }
+
+  if (entry.monthlySpend > 500) {
+    const savings = Math.round(entry.monthlySpend * 0.35)
+    return overspending(
+      entry,
+      entry.monthlySpend - savings,
+      "Audit metric retention and host count — estimated 30-40% reduction possible",
+      "Datadog charges per host and per metric retention period. Most teams over-provision both. " +
+      "Reducing retention from 15 to 7 days and removing idle hosts typically saves 30-40%.",
+    )
+  }
+
+  if (entry.monthlySpend > 100) {
+    return review(
+      entry,
+      "Review metric volume and retention settings",
+      "Datadog costs scale with host count and retention. Review both before your next renewal cycle.",
+      0.20,
+    )
+  }
+
+  return optimal(entry, "Spend is modest - ensure you are on the correct plan tier for your host count.")
 }
 
 /**
@@ -406,8 +463,22 @@ export function auditDatadog(entry: ToolEntry, _useCase: string): ToolRecommenda
  */
 export function auditOpenAI(entry: ToolEntry, _useCase: string): ToolRecommendation {
   const spend = entry.monthlySpend
+  const OPENAI_HIGH_SPEND_THRESHOLD = 100
+  const OPENAI_MID_SPEND_THRESHOLD = 50
 
-  if (spend > 100) {
+  // Batch API available at Tier 2+; cheaper for async workloads.
+  if (["Tier 2", "Tier 3", "Tier 4", "Tier 5"].includes(entry.plan) && spend > 200) {
+    const savings = Math.round(spend * 0.5)
+    return overspending(
+      entry,
+      spend - savings,
+      "Use Batch API for non-real-time workloads (50% cost reduction)",
+      "OpenAI Batch API processes requests asynchronously at 50% of standard pricing. " +
+      "Suitable for evals, classification, and any task that doesn't need a real-time response.",
+    )
+  }
+
+  if (spend > OPENAI_HIGH_SPEND_THRESHOLD) {
     const savings = Math.round(spend * 0.4)
     return overspending(
       entry,
@@ -418,7 +489,7 @@ export function auditOpenAI(entry: ToolEntry, _useCase: string): ToolRecommendat
     )
   }
 
-  if (spend >= 50) {
+  if (spend >= OPENAI_MID_SPEND_THRESHOLD) {
     const savings = Math.round(spend * 0.3)
     return overspending(
       entry,

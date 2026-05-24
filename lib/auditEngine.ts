@@ -73,66 +73,77 @@ function checkRedundancy(
 
   // ── Cursor + Windsurf overlap ─────────────────────────────────────────────
   if (activeIds.has("cursor") && activeIds.has("windsurf")) {
-    const cursorSpend   = tools.find(t => t.id === "cursor")!.monthlySpend
-    const windsurfSpend = tools.find(t => t.id === "windsurf")!.monthlySpend
-    const cheaperTool   = cursorSpend <= windsurfSpend ? "Cursor" : "Windsurf"
+    const cursorEntry   = tools.find(t => t.id === "cursor")!
+    const windsurfEntry = tools.find(t => t.id === "windsurf")!
+    const toCancel = cursorEntry.monthlySpend >= windsurfEntry.monthlySpend ? cursorEntry : windsurfEntry
+    const toKeep   = toCancel === cursorEntry ? "Windsurf" : "Cursor"
 
-    log.warn("Redundancy: Cursor + Windsurf both active", { cursorSpend, windsurfSpend })
+    log.warn("Redundancy: Cursor + Windsurf both active", {
+      cursorSpend: cursorEntry.monthlySpend,
+      windsurfSpend: windsurfEntry.monthlySpend
+    })
 
     extras.push({
-      tool: cheaperTool,
-      currentPlan: "—",
-      currentSpend: 0,
-      recommendedAction: "Eliminate overlapping AI coding editor",
+      tool: toCancel.name,
+      currentPlan: toCancel.plan,
+      currentSpend: toCancel.monthlySpend,
+      recommendedAction: `Cancel ${toCancel.name} — keep ${toKeep} as primary AI coding editor`,
       projectedSpend: 0,
-      monthlySavings: 0,
-      annualSavings: 0,
-      status: "switch",
+      monthlySavings: toCancel.monthlySpend,
+      annualSavings: toCancel.monthlySpend * 12,
+      status: "overspending",
       reason:
-        "You are paying for two AI coding editors. Pick one primary tool and cancel the other to eliminate overlap.",
+        `You are paying for two AI coding editors (Cursor + Windsurf). Pick one and cancel the other. ` +
+        `Cancelling ${toCancel.name} saves $${toCancel.monthlySpend}/mo.`,
     })
   }
 
   // ── Claude + ChatGPT overlap ──────────────────────────────────────────────
   if (activeIds.has("anthropic") && activeIds.has("chatgpt")) {
-    const claudeRec  = recommendations.find(r => r.tool.toLowerCase().includes("claude") || r.tool.toLowerCase().includes("anthropic"))
-    const chatgptRec = recommendations.find(r => r.tool.toLowerCase().includes("chatgpt"))
-    const target     = (claudeRec?.monthlySavings ?? 0) <= (chatgptRec?.monthlySavings ?? 0)
-      ? "Anthropic Claude"
-      : "ChatGPT Plus"
+    const anthropicEntry = tools.find(t => t.id === "anthropic")!
+    const chatgptEntry   = tools.find(t => t.id === "chatgpt")!
+    const toCancel = anthropicEntry.monthlySpend >= chatgptEntry.monthlySpend ? anthropicEntry : chatgptEntry
 
     log.warn("Redundancy: Anthropic Claude + ChatGPT both active")
 
     extras.push({
-      tool: target,
-      currentPlan: "—",
-      currentSpend: 0,
-      recommendedAction: "Consolidate overlapping AI assistants",
+      tool: toCancel.name,
+      currentPlan: toCancel.plan,
+      currentSpend: toCancel.monthlySpend,
+      recommendedAction: `Consolidate AI assistants — cancel ${toCancel.name}`,
       projectedSpend: 0,
-      monthlySavings: 0,
-      annualSavings: 0,
-      status: "switch",
+      monthlySavings: toCancel.monthlySpend,
+      annualSavings: toCancel.monthlySpend * 12,
+      status: "overspending",
       reason:
-        "Overlapping general AI assistants detected. Evaluate which one your team actually uses daily and consolidate.",
+        "Overlapping general AI assistants detected. Evaluate which one your team uses daily and consolidate. " +
+        `Cancelling ${toCancel.name} saves $${toCancel.monthlySpend}/mo.`,
     })
   }
 
   // ── OpenAI API + Anthropic API overlap ───────────────────────────────────
   if (activeIds.has("openai") && activeIds.has("anthropic")) {
-    log.warn("Redundancy: OpenAI API + Anthropic API both active")
-
-    extras.push({
-      tool: "API Overlap",
-      currentPlan: "—",
-      currentSpend: 0,
-      recommendedAction: "Standardize on one API provider",
-      projectedSpend: 0,
-      monthlySavings: 0,
-      annualSavings: 0,
-      status: "switch",
-      reason:
-        "Dual API spend detected. If using both for similar tasks, standardize on one provider to simplify billing and reduce cognitive overhead.",
-    })
+    const openaiEntry    = tools.find(t => t.id === "openai")!
+    const anthropicEntry = tools.find(t => t.id === "anthropic")!
+    const bothAreAPIs = anthropicEntry.plan === "API" && openaiEntry.monthlySpend > 100
+    if (bothAreAPIs) {
+      const combinedSpend = openaiEntry.monthlySpend + anthropicEntry.monthlySpend
+      const estimatedSavings = Math.round(combinedSpend * 0.30)
+      log.warn("Redundancy: OpenAI API + Anthropic API both active")
+      extras.push({
+        tool: "Dual API Spend",
+        currentPlan: "—",
+        currentSpend: combinedSpend,
+        recommendedAction: "Standardize on one API provider to reduce operational complexity",
+        projectedSpend: combinedSpend - estimatedSavings,
+        monthlySavings: estimatedSavings,
+        annualSavings: estimatedSavings * 12,
+        status: "review",
+        reason:
+          "Running two LLM API providers simultaneously adds billing complexity and duplicated prompt engineering. " +
+          "Standardizing on one provider typically reduces combined spend 25-35% through volume discounts.",
+      })
+    }
   }
 
   return extras
@@ -156,6 +167,23 @@ export function runAudit(form: FormState) {
 
   const perToolResults: ToolRecommendation[] = activeTools.map(entry => {
     const ruleFn = RULE_MAP[entry.id]
+
+    if (entry.usageScore <= 2) {
+      log.info(`Low usageScore for ${entry.name} (${entry.usageScore}/10) — flagging for cancellation review`)
+      return {
+        tool: entry.name,
+        currentPlan: entry.plan,
+        currentSpend: entry.monthlySpend,
+        recommendedAction: "Evaluate cancellation — usage is very low",
+        projectedSpend: 0,
+        monthlySavings: entry.monthlySpend,
+        annualSavings: entry.monthlySpend * 12,
+        status: "review" as const,
+        reason:
+          `This tool has a usage score of ${entry.usageScore}/10. Low daily usage is the strongest indicator ` +
+          "of a cancellation candidate. Survey the team before your next renewal.",
+      }
+    }
 
     if (!ruleFn) {
       // No specific rule for this tool — mark as optimal (unknown tool)
@@ -182,7 +210,7 @@ export function runAudit(form: FormState) {
   const allRecommendations = [...perToolResults, ...redundancyResults]
 
   const totalMonthlySavings = allRecommendations.reduce((sum, r) => sum + r.monthlySavings, 0)
-  const totalAnnualSavings  = totalMonthlySavings * 12
+  const totalAnnualSavings  = allRecommendations.reduce((sum, r) => sum + r.annualSavings, 0)
 
   log.info("runAudit complete", { totalMonthlySavings, totalAnnualSavings, recommendations: allRecommendations.length })
 
