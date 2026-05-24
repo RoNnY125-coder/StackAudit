@@ -183,14 +183,6 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
               </div>
             </div>
           </div>
-
-          {(tool.category === "dev-tools" || tool.category === "productivity") && (
-            <p className="text-xs text-on-surface-variant font-mono">
-              Auto-calculated: <strong className="text-on-surface">${entry.monthlySpend}/mo</strong>
-              {" "}({entry.seats} seat{entry.seats !== 1 ? "s" : ""} ×{" "}
-              ${entry.seats > 0 ? Math.round(entry.monthlySpend / entry.seats) : 0}/seat)
-            </p>
-          )}
         </div>
       )}
     </div>
