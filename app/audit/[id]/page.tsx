@@ -38,7 +38,13 @@ export default async function SharedAuditPage({ params }: { params: Promise<{ id
   if (error || !data) return notFound()
 
   const recommendations = data.savings_json || []
-  const totalMonthlySavings = data.total_monthly_savings || 0
+  const totalMonthlySavings = recommendations.reduce(
+    (sum: number, r: ToolRecommendation) => sum + (r.monthlySavings ?? 0), 0
+  )
+  const totalAnnualSavings = recommendations.reduce(
+    (sum: number, r: ToolRecommendation) => sum + (r.annualSavings ?? 0), 0
+  )
+  void totalAnnualSavings
 
   return (
     <div className="min-h-screen bg-background">

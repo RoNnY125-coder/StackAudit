@@ -71,65 +71,72 @@ function checkRedundancy(
   /** IDs of tools the user is actually paying for (spend > 0). */
   const activeIds = new Set(tools.filter(t => t.monthlySpend > 0).map(t => t.id))
 
+  // These currentSpend values came from entry.monthlySpend at rule time.
+  const spendByName = new Map(recommendations.map(r => [r.tool.toLowerCase(), r.currentSpend]))
+
+  const getSpend = (toolId: string, displayName: string): number => {
+    const fromRec = spendByName.get(displayName.toLowerCase())
+    if (fromRec !== undefined) return fromRec
+    return tools.find(t => t.id === toolId)?.monthlySpend ?? 0
+  }
+
   // ── Cursor + Windsurf overlap ─────────────────────────────────────────────
   if (activeIds.has("cursor") && activeIds.has("windsurf")) {
-    const cursorEntry   = tools.find(t => t.id === "cursor")!
-    const windsurfEntry = tools.find(t => t.id === "windsurf")!
-    const toCancel = cursorEntry.monthlySpend >= windsurfEntry.monthlySpend ? cursorEntry : windsurfEntry
-    const toKeep   = toCancel === cursorEntry ? "Windsurf" : "Cursor"
-
-    log.warn("Redundancy: Cursor + Windsurf both active", {
-      cursorSpend: cursorEntry.monthlySpend,
-      windsurfSpend: windsurfEntry.monthlySpend
-    })
+    const cursorSpend   = getSpend("cursor", "Cursor")
+    const windsurfSpend = getSpend("windsurf", "Windsurf")
+    const cancelName    = cursorSpend >= windsurfSpend ? "Cursor" : "Windsurf"
+    const cancelId      = cursorSpend >= windsurfSpend ? "cursor" : "windsurf"
+    const keepName      = cancelName === "Cursor" ? "Windsurf" : "Cursor"
+    const cancelSpend   = cancelName === "Cursor" ? cursorSpend : windsurfSpend
+    const cancelEntry   = tools.find(t => t.id === cancelId)!
 
     extras.push({
-      tool: toCancel.name,
-      currentPlan: toCancel.plan,
-      currentSpend: toCancel.monthlySpend,
-      recommendedAction: `Cancel ${toCancel.name} — keep ${toKeep} as primary AI coding editor`,
+      tool: cancelName,
+      currentPlan: cancelEntry.plan,
+      currentSpend: cancelSpend,
+      recommendedAction: `Cancel ${cancelName} — keep ${keepName} as primary AI coding editor`,
       projectedSpend: 0,
-      monthlySavings: toCancel.monthlySpend,
-      annualSavings: toCancel.monthlySpend * 12,
+      monthlySavings: cancelSpend,
+      annualSavings: cancelSpend * 12,
       status: "overspending",
       reason:
         `You are paying for two AI coding editors (Cursor + Windsurf). Pick one and cancel the other. ` +
-        `Cancelling ${toCancel.name} saves $${toCancel.monthlySpend}/mo.`,
+        `Cancelling ${cancelName} saves $${cancelSpend}/mo.`,
     })
   }
 
   // ── Claude + ChatGPT overlap ──────────────────────────────────────────────
   if (activeIds.has("anthropic") && activeIds.has("chatgpt")) {
-    const anthropicEntry = tools.find(t => t.id === "anthropic")!
-    const chatgptEntry   = tools.find(t => t.id === "chatgpt")!
-    const toCancel = anthropicEntry.monthlySpend >= chatgptEntry.monthlySpend ? anthropicEntry : chatgptEntry
-
-    log.warn("Redundancy: Anthropic Claude + ChatGPT both active")
+    const claudeSpend  = getSpend("anthropic", "Anthropic Claude")
+    const chatgptSpend = getSpend("chatgpt", "ChatGPT Plus")
+    const cancelName   = claudeSpend >= chatgptSpend ? "Anthropic Claude" : "ChatGPT Plus"
+    const cancelId     = claudeSpend >= chatgptSpend ? "anthropic" : "chatgpt"
+    const cancelSpend  = claudeSpend >= chatgptSpend ? claudeSpend : chatgptSpend
+    const cancelEntry  = tools.find(t => t.id === cancelId)!
 
     extras.push({
-      tool: toCancel.name,
-      currentPlan: toCancel.plan,
-      currentSpend: toCancel.monthlySpend,
-      recommendedAction: `Consolidate AI assistants — cancel ${toCancel.name}`,
+      tool: cancelName,
+      currentPlan: cancelEntry.plan,
+      currentSpend: cancelSpend,
+      recommendedAction: `Consolidate AI assistants — cancel ${cancelName}`,
       projectedSpend: 0,
-      monthlySavings: toCancel.monthlySpend,
-      annualSavings: toCancel.monthlySpend * 12,
+      monthlySavings: cancelSpend,
+      annualSavings: cancelSpend * 12,
       status: "overspending",
       reason:
         "Overlapping general AI assistants detected. Evaluate which one your team uses daily and consolidate. " +
-        `Cancelling ${toCancel.name} saves $${toCancel.monthlySpend}/mo.`,
+        `Cancelling ${cancelName} saves $${cancelSpend}/mo.`,
     })
   }
 
   // ── OpenAI API + Anthropic API overlap ───────────────────────────────────
   if (activeIds.has("openai") && activeIds.has("anthropic")) {
-    const openaiEntry    = tools.find(t => t.id === "openai")!
-    const anthropicEntry = tools.find(t => t.id === "anthropic")!
-    const bothAreAPIs = anthropicEntry.plan === "API" && openaiEntry.monthlySpend > 100
-    if (bothAreAPIs) {
-      const combinedSpend = openaiEntry.monthlySpend + anthropicEntry.monthlySpend
+    const openaiSpend    = getSpend("openai", "OpenAI API")
+    const anthropicSpend = getSpend("anthropic", "Anthropic Claude")
+    const combinedSpend  = openaiSpend + anthropicSpend
+
+    if (openaiSpend > 100) {
       const estimatedSavings = Math.round(combinedSpend * 0.30)
-      log.warn("Redundancy: OpenAI API + Anthropic API both active")
       extras.push({
         tool: "Dual API Spend",
         currentPlan: "—",

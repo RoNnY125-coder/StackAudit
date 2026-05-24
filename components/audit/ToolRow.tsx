@@ -113,68 +113,81 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
       </div>
 
       {isExpanded && isChecked && entry && (
-        <div className="p-4 border-t border-outline-variant/50 bg-surface-container-lowest grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 border-t border-outline-variant/50 bg-surface-container-lowest space-y-4">
           {(tool.category === "llm-apis" || tool.category === "infrastructure") && (
-            <div className="space-y-1 sm:col-span-3">
+            <div className="space-y-1">
               <label className="text-xs text-on-surface-variant font-mono uppercase">
                 Monthly Spend ($) - enter your actual bill
               </label>
               <Input
                 type="number"
                 min={0}
+                step={1}
                 value={entry.monthlySpend}
                 onChange={(e) => onChange({ ...entry, monthlySpend: parseFloat(e.target.value) || 0 })}
                 className="h-8 bg-surface border-outline-variant focus-visible:ring-primary"
-                placeholder="e.g. 250"
+                placeholder="e.g. 340"
                 data-testid={`tool-spend-input-${tool.id}`}
               />
             </div>
           )}
-          <div className="space-y-1">
-            <label className="text-xs text-on-surface-variant font-mono uppercase">Seats</label>
-            <Input 
-              type="number" 
-              min={1} 
-              value={entry.seats} 
-              onChange={(e) => updateField('seats', parseInt(e.target.value) || 1)}
-              className="h-8 bg-surface border-outline-variant focus-visible:ring-primary"
-              data-testid={`tool-seats-input-${tool.id}`}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs text-on-surface-variant font-mono uppercase">Plan</label>
-            <Select value={entry.plan} onValueChange={(val) => { if (val) updateField('plan', val) }}>
-              <SelectTrigger 
-                className="h-8 bg-surface border-outline-variant focus:ring-primary"
-                data-testid={`tool-plan-select-${tool.id}`}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {tool.plans.map(plan => (
-                  <SelectItem key={plan} value={plan}>{plan}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs text-on-surface-variant font-mono uppercase">
-              Used Daily ({entry.usageScore}/10)
-            </label>
-            <input 
-              type="range" 
-              min={0} 
-              max={10} 
-              value={entry.usageScore}
-              onChange={(e) => updateField('usageScore', parseInt(e.target.value))}
-              className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary"
-              data-testid={`tool-usage-slider-${tool.id}`}
-            />
-            <div className="flex justify-between text-[10px] text-on-surface-variant">
-              <span>Rarely</span>
-              <span>Always</span>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs text-on-surface-variant font-mono uppercase">Seats</label>
+              <Input
+                type="number"
+                min={1}
+                value={entry.seats}
+                onChange={(e) => updateField("seats", parseInt(e.target.value) || 1)}
+                className="h-8 bg-surface border-outline-variant focus-visible:ring-primary"
+                data-testid={`tool-seats-input-${tool.id}`}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs text-on-surface-variant font-mono uppercase">Plan</label>
+              <Select value={entry.plan} onValueChange={(val) => { if (val) updateField("plan", val) }}>
+                <SelectTrigger
+                  className="h-8 bg-surface border-outline-variant focus:ring-primary"
+                  data-testid={`tool-plan-select-${tool.id}`}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {tool.plans.map((plan) => (
+                    <SelectItem key={plan} value={plan}>{plan}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs text-on-surface-variant font-mono uppercase">
+                Used Daily ({entry.usageScore}/10)
+              </label>
+              <input
+                type="range"
+                min={0}
+                max={10}
+                value={entry.usageScore}
+                onChange={(e) => updateField("usageScore", parseInt(e.target.value))}
+                className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary"
+                data-testid={`tool-usage-slider-${tool.id}`}
+              />
+              <div className="flex justify-between text-[10px] text-on-surface-variant">
+                <span>Rarely</span>
+                <span>Always</span>
+              </div>
             </div>
           </div>
+
+          {(tool.category === "dev-tools" || tool.category === "productivity") && (
+            <p className="text-xs text-on-surface-variant font-mono">
+              Auto-calculated spend: <strong className="text-on-surface">${entry.monthlySpend}/mo</strong>
+              {" "}({entry.seats} seat{entry.seats !== 1 ? "s" : ""} x ${Math.round(entry.monthlySpend / entry.seats)}/seat)
+            </p>
+          )}
         </div>
       )}
     </div>

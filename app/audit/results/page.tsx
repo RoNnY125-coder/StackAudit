@@ -37,6 +37,14 @@ export default function ResultsPage() {
 
   if (!result) return null
 
+  const totalMonthlySavings = result.recommendations.reduce(
+    (sum, r) => sum + (r.monthlySavings ?? 0), 0
+  )
+  const totalAnnualSavings = result.recommendations.reduce(
+    (sum, r) => sum + (r.annualSavings ?? 0), 0
+  )
+  void totalAnnualSavings
+
   return (
     <div className="min-h-screen bg-background">
       <main className="max-w-[680px] mx-auto px-4 py-8" id="main-content">
@@ -47,7 +55,7 @@ export default function ResultsPage() {
           <ArrowLeft className="w-4 h-4" /> Run new audit
         </Link>
 
-        <SavingsHero amount={result.totalMonthlySavings} />
+        <SavingsHero amount={totalMonthlySavings} />
 
         <div className="print:hidden">
           <ShareBar slug={result.shareSlug} />
@@ -62,7 +70,7 @@ export default function ResultsPage() {
         <AIAnalysis text={result.aiAnalysis} />
 
         <div className="print:hidden">
-          <CTABlock savings={result.totalMonthlySavings} />
+          <CTABlock savings={totalMonthlySavings} />
         </div>
 
         <div className="flex justify-center items-center gap-4 mt-12 mb-24 print:hidden">
