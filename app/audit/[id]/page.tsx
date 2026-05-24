@@ -11,11 +11,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params
   const { data, error } = await supabaseAdmin
     .from("audits")
-    .select("total_monthly_savings")
+    .select("savings_json")
     .eq("id", id)
     .single()
 
-  const savings = !error && data ? data.total_monthly_savings : 0
+  const recommendations = !error && data ? data.savings_json || [] : []
+  const savings = recommendations.reduce(
+    (sum: number, r: ToolRecommendation) => sum + (r.monthlySavings ?? 0), 0
+  )
 
   return {
     title: `AI Spend Audit — $${savings} saved`,

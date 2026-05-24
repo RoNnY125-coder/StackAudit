@@ -117,14 +117,16 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
           {(tool.category === "llm-apis" || tool.category === "infrastructure") && (
             <div className="space-y-1">
               <label className="text-xs text-on-surface-variant font-mono uppercase">
-                Monthly Spend ($) - enter your actual bill
+                Monthly Spend ($) — enter your actual bill
               </label>
               <Input
                 type="number"
                 min={0}
                 step={1}
                 value={entry.monthlySpend}
-                onChange={(e) => onChange({ ...entry, monthlySpend: parseFloat(e.target.value) || 0 })}
+                onChange={(e) =>
+                  onChange({ ...entry, monthlySpend: parseFloat(e.target.value) || 0 })
+                }
                 className="h-8 bg-surface border-outline-variant focus-visible:ring-primary"
                 placeholder="e.g. 340"
                 data-testid={`tool-spend-input-${tool.id}`}
@@ -184,8 +186,9 @@ export default function ToolRow({ tool, entry, onChange, onRemove }: ToolRowProp
 
           {(tool.category === "dev-tools" || tool.category === "productivity") && (
             <p className="text-xs text-on-surface-variant font-mono">
-              Auto-calculated spend: <strong className="text-on-surface">${entry.monthlySpend}/mo</strong>
-              {" "}({entry.seats} seat{entry.seats !== 1 ? "s" : ""} x ${Math.round(entry.monthlySpend / entry.seats)}/seat)
+              Auto-calculated: <strong className="text-on-surface">${entry.monthlySpend}/mo</strong>
+              {" "}({entry.seats} seat{entry.seats !== 1 ? "s" : ""} ×{" "}
+              ${entry.seats > 0 ? Math.round(entry.monthlySpend / entry.seats) : 0}/seat)
             </p>
           )}
         </div>

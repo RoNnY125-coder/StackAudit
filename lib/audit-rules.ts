@@ -310,7 +310,7 @@ export function auditChatGPT(entry: ToolEntry, _useCase: string): ToolRecommenda
 
   // Team plan premium not justified for tiny squads
   if (entry.plan === "Team" && seats < 3) {
-    return overspending(
+    return switchPlan(
       entry,
       seats * 20,
       `Switch to ChatGPT Plus per user ($20/user)`,
