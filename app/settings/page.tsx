@@ -88,13 +88,30 @@ function loadSavedSettings(): { emailSavings: boolean; weeklyUpdates: boolean } 
 }
 
 export default function SettingsPage() {
-  const [darkMode, setDarkMode] = useState(true)
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window === "undefined") return true
+    // Check localStorage first, then fall back to current class
+    const saved = localStorage.getItem("stackaudit_theme")
+    if (saved === "light") return false
+    if (saved === "dark") return true
+    return document.documentElement.classList.contains("dark")
+  })
   const [savedSettings] = useState(loadSavedSettings)
   const [emailSavings, setEmailSavings] = useState(savedSettings.emailSavings)
   const [weeklyUpdates, setWeeklyUpdates] = useState(savedSettings.weeklyUpdates)
   const [clearMsg, setClearMsg] = useState("")
 
-  // Persist to localStorage when toggles change
+  // Apply dark mode class to <html> and persist preference
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+    }
+    localStorage.setItem("stackaudit_theme", darkMode ? "dark" : "light")
+  }, [darkMode])
+
+  // Persist notification settings to localStorage
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -199,16 +216,6 @@ export default function SettingsPage() {
                 className="text-primary hover:underline"
               >
                 GitHub Repository ↗
-              </Link>
-            </p>
-            <p>
-              <Link
-                href="https://credex.rocks"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                credex.rocks ↗
               </Link>
             </p>
           </div>

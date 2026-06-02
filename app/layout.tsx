@@ -79,9 +79,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("stackaudit_theme");if(t==="light")document.documentElement.classList.remove("dark")}catch(e){}})()`,
+          }}
+        />
       </head>
       <body className={`${inter.className} bg-background text-on-surface antialiased`}>
         <WebAppJsonLd />

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
 import { runAudit } from "@/lib/auditEngine"
 import { supabaseAdmin } from "@/lib/supabase"
 import { FormState, ToolEntry } from "@/lib/types"
@@ -45,6 +46,8 @@ export async function POST(request: Request) {
 
       if (!error && data) {
         shareSlug = data.id
+        // Bust the /api/stats ISR cache so the homepage shows updated numbers
+        revalidatePath("/api/stats")
       }
     } catch (dbError) {
       log.error("Supabase error", dbError)

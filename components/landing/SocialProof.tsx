@@ -35,7 +35,7 @@ export default function SocialProof() {
   const [loaded, setLoaded] = useState(false)
   const [lastLabel, setLastLabel] = useState("—")
 
-  useEffect(() => {
+  const fetchStats = () => {
     fetch("/api/stats")
       .then((r) => {
         if (!r.ok) throw new Error(`stats ${r.status}`)
@@ -50,6 +50,27 @@ export default function SocialProof() {
         console.error("[SocialProof]", err)
         setLoaded(true)
       })
+  }
+
+  // Initial fetch
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  // Re-fetch when the tab becomes visible again (e.g. user returns from audit page)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchStats()
+    }
+    document.addEventListener("visibilitychange", onVisible)
+    return () => document.removeEventListener("visibilitychange", onVisible)
+  }, [])
+
+  // Re-fetch when a new audit completes (fired by useAuditForm)
+  useEffect(() => {
+    const onAuditComplete = () => fetchStats()
+    window.addEventListener("stackaudit:audit-complete", onAuditComplete)
+    return () => window.removeEventListener("stackaudit:audit-complete", onAuditComplete)
   }, [])
 
   // Refresh the "X ago" label every 30 s without re-fetching

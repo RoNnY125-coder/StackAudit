@@ -127,6 +127,12 @@ export function useAuditForm() {
       const result = await res.json()
       sessionStorage.setItem("stackaudit_result", JSON.stringify(result))
       log.info("Audit complete", { totalMonthlySavings: result.totalMonthlySavings })
+      
+      // Notify other components (like SocialProof) that an audit completed
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("stackaudit:audit-complete"))
+      }
+      
       return true
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "An unexpected error occurred"
