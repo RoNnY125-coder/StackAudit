@@ -13,8 +13,15 @@ export async function GET() {
 
     if (countError) throw countError
 
+    if (count === 0) {
+      return NextResponse.json({
+        totalAudits: 0,
+        avgMonthlySavings: 0,
+        lastAuditAt: null,
+      })
+    }
+
     // 2. Average monthly savings
-    // Recompute from savings_json rows so stale stored totals don't skew the average
     const { data: rows, error: rowsError } = await supabaseAdmin
       .from("audits")
       .select("savings_json, total_monthly_savings")
@@ -26,8 +33,8 @@ export async function GET() {
     const savingsPerAudit = (rows ?? []).map((row) => {
       const recs = Array.isArray(row.savings_json) ? row.savings_json : []
       const computed: number = recs.reduce(
-        (sum: number, r: { monthlySavings?: number }) =>
-          sum + (r.monthlySavings ?? 0),
+        (sum: number, r: any) =>
+          sum + (typeof r?.monthlySavings === 'number' ? r.monthlySavings : 0),
         0
       )
       // If computed > 0 use it (fixed engine), otherwise fall back to stored value
@@ -49,7 +56,7 @@ export async function GET() {
       .limit(1)
       .single()
 
-    // PGRST116 = no rows found — not a real error
+    // PGRST116 = no rows found — we already handled count === 0, but just in case
     if (latestError && latestError.code !== "PGRST116") throw latestError
 
     return NextResponse.json({

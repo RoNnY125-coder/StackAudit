@@ -36,7 +36,7 @@ export default function SocialProof() {
   const [lastLabel, setLastLabel] = useState("—")
 
   const fetchStats = () => {
-    fetch("/api/stats")
+    fetch(`/api/stats?t=${Date.now()}`)
       .then((r) => {
         if (!r.ok) throw new Error(`stats ${r.status}`)
         return r.json()
