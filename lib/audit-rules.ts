@@ -115,7 +115,7 @@ function optimal(entry: ToolEntry, reason?: string, affiliateUrl?: string): Tool
  * Pro on annual billing saves 20 % vs monthly.
  * Hobby is single-user only.
  */
-export function auditCursor(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditCursor(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
   const spend  = entry.monthlySpend
 
@@ -250,7 +250,7 @@ export function auditGithubCopilot(entry: ToolEntry, useCase: string): ToolRecom
  * Team plan has a 5-seat minimum at $25/seat = $125/mo floor.
  * Under 5 users, individual Pro plans ($20/user) cost less.
  */
-export function auditAnthropic(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditAnthropic(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
   // API plan is pay-as-you-go; seat count is irrelevant.
@@ -305,7 +305,7 @@ export function auditAnthropic(entry: ToolEntry, _useCase: string): ToolRecommen
  * Team adds shared workspaces but is only justified at 3+ users.
  * Enterprise is designed for 150+ seat orgs — overkill under 10 users.
  */
-export function auditChatGPT(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditChatGPT(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
   // Team plan premium not justified for tiny squads
@@ -355,7 +355,7 @@ export function auditChatGPT(entry: ToolEntry, _useCase: string): ToolRecommenda
  * Pro charges per team member.
  * Removing inactive members (no deploys in 90+ days) is pure savings.
  */
-export function auditVercel(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditVercel(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
   if (entry.plan === "Enterprise") {
@@ -388,7 +388,7 @@ export function auditVercel(entry: ToolEntry, _useCase: string): ToolRecommendat
  *
  * Teams plan adds admin controls and SSO — unnecessary under 4 seats.
  */
-export function auditWindsurf(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditWindsurf(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
   // Teams overkill for micro squads
@@ -427,7 +427,7 @@ export function auditWindsurf(entry: ToolEntry, _useCase: string): ToolRecommend
  * Metric retention and host count are the two biggest cost levers.
  * Most teams over-provision both. Estimated 35 % reduction is conservative.
  */
-export function auditDatadog(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditDatadog(entry: ToolEntry): ToolRecommendation {
   if (entry.plan === "Developer") {
     return optimal(entry, "Developer plan is the entry tier. Optimize by reviewing metric volume and retention settings.")
   }
@@ -461,7 +461,7 @@ export function auditDatadog(entry: ToolEntry, _useCase: string): ToolRecommenda
  * GPT-4o-mini costs ~15× less than GPT-4o for equivalent tasks
  * like summarization, classification, and structured extraction.
  */
-export function auditOpenAI(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditOpenAI(entry: ToolEntry): ToolRecommendation {
   const spend = entry.monthlySpend
   const OPENAI_HIGH_SPEND_THRESHOLD = 100
   const OPENAI_MID_SPEND_THRESHOLD = 50
@@ -511,7 +511,7 @@ export function auditOpenAI(entry: ToolEntry, _useCase: string): ToolRecommendat
  * Business tier covers all core features for teams under 10.
  * Inactive member seats are a common cost leak.
  */
-export function auditNotion(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditNotion(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
   // Large Business teams likely have inactive seats
@@ -552,7 +552,7 @@ export function auditNotion(entry: ToolEntry, _useCase: string): ToolRecommendat
  * Plus is well-priced for small teams.
  * Large Standard teams may benefit from Plus analytics.
  */
-export function auditLinear(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditLinear(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
   if (entry.plan === "Plus" && seats <= 10) {
@@ -577,7 +577,7 @@ export function auditLinear(entry: ToolEntry, _useCase: string): ToolRecommendat
  * Professional tier at 5+ seats often has unused alert routing features.
  * Flag for manual review before next renewal.
  */
-export function auditPagerDuty(entry: ToolEntry, _useCase: string): ToolRecommendation {
+export function auditPagerDuty(entry: ToolEntry): ToolRecommendation {
   const seats = Math.max(entry.seats, 1)
 
   if (entry.plan === "Professional" && seats > 5) {

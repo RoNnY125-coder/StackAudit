@@ -33,7 +33,7 @@ export async function GET() {
     const savingsPerAudit = (rows ?? []).map((row) => {
       const recs = Array.isArray(row.savings_json) ? row.savings_json : []
       const computed: number = recs.reduce(
-        (sum: number, r: any) =>
+        (sum: number, r: Record<string, unknown>) =>
           sum + (typeof r?.monthlySavings === 'number' ? r.monthlySavings : 0),
         0
       )
