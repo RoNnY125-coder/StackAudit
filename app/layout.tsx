@@ -8,25 +8,44 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 export const metadata: Metadata = {
   title: {
     default: "StackAudit — Free AI Spend Audit for Startups",
-    template: "%s | StackAudit"
+    template: "%s | StackAudit",
   },
-  description: "Find out exactly where your startup is wasting money on AI tools. Free audit in 60 seconds. No login required. Supports Cursor, Copilot, ChatGPT, Claude, Vercel, Datadog, and more.",
+  description:
+    "Find out exactly where your startup is wasting money on AI tools. Free audit in 60 seconds. No login required. Supports Cursor, GitHub Copilot, ChatGPT, Claude, Vercel, Datadog, Linear, Notion, and more.",
   keywords: [
-    "AI spend audit", "SaaS cost optimization", "cursor vs copilot",
-    "reduce AI tool costs", "startup tool audit", "developer tool pricing",
-    "AI subscription management", "tech stack cost analysis"
+    "AI spend audit",
+    "SaaS cost optimization",
+    "cursor vs copilot 2026",
+    "reduce AI tool costs",
+    "startup tool audit",
+    "developer tool pricing",
+    "AI subscription management",
+    "tech stack cost analysis",
+    "github copilot pricing",
+    "ChatGPT team pricing",
+    "Vercel cost optimization",
+    "Datadog cost reduction",
   ],
   authors: [{ name: "StackAudit" }],
   creator: "StackAudit",
-  metadataBase: new URL("https://stackaudit.app"),
+  publisher: "StackAudit",
+  metadataBase: new URL("https://stack-audit-ashy.vercel.app"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://stackaudit.app",
+    url: "https://stack-audit-ashy.vercel.app",
     siteName: "StackAudit",
     title: "StackAudit — Free AI Spend Audit for Startups",
-    description: "Find $2,400/year in wasted AI tool spend. Free audit in 60 seconds. No signup.",
-    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "StackAudit — AI Spend Analyzer" }],
+    description:
+      "Find wasted AI tool spend in 60 seconds. No signup required. Supports Cursor, Copilot, ChatGPT, Claude, Vercel, Datadog and more.",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "StackAudit — AI Spend Analyzer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -37,10 +56,16 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" }
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   alternates: {
-    canonical: "https://stackaudit.app",
+    canonical: "https://stack-audit-ashy.vercel.app",
   },
 };
 

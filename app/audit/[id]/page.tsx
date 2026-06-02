@@ -7,25 +7,48 @@ import RecommendationRow from "@/components/results/RecommendationRow"
 import CTABlock from "@/components/results/CTABlock"
 import { ToolRecommendation } from "@/lib/types"
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   const { id } = await params
   const { data, error } = await supabaseAdmin
     .from("audits")
-    .select("savings_json")
+    .select("savings_json, total_monthly_savings")
     .eq("id", id)
     .single()
 
-  const recommendations = !error && data ? data.savings_json || [] : []
-  const savings = recommendations.reduce(
-    (sum: number, r: ToolRecommendation) => sum + (r.monthlySavings ?? 0), 0
+  if (error || !data) {
+    return {
+      title: "AI Spend Audit Results",
+      description:
+        "See how startups identify wasted AI tool spend with StackAudit.",
+    }
+  }
+
+  // Recompute from rows so stale DB totals don't pollute the meta title
+  const recs = Array.isArray(data.savings_json) ? data.savings_json : []
+  const savings = recs.reduce(
+    (sum: number, r: { monthlySavings?: number }) =>
+      sum + (r.monthlySavings ?? 0),
+    0
   )
+  const displaySavings = savings > 0 ? savings : (data.total_monthly_savings ?? 0)
 
   return {
-    title: `AI Spend Audit — $${savings} saved`,
-    description: "See how this startup identified wasted AI tool spend with StackAudit.",
+    title: `AI Spend Audit — $${displaySavings.toLocaleString()}/mo in savings found`,
+    description: `This startup identified $${displaySavings.toLocaleString()}/month in wasted AI tool spend. Run your own free audit at StackAudit.`,
     openGraph: {
-      title: `This startup could save $${savings}/month on AI tools`,
-      description: "Run your own free audit at stackaudit.app",
+      title: `This startup could save $${displaySavings.toLocaleString()}/month on AI tools`,
+      description:
+        "Run your own free AI spend audit at StackAudit. No login required.",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `$${displaySavings.toLocaleString()}/mo in AI tool savings identified`,
+      description: "Run your free audit at StackAudit.",
     },
   }
 }
@@ -40,13 +63,12 @@ export default async function SharedAuditPage({ params }: { params: Promise<{ id
 
   if (error || !data) return notFound()
 
-  const recommendations = data.savings_json || []
+  const recommendations = Array.isArray(data.savings_json) ? data.savings_json : []
   const totalMonthlySavings = recommendations.reduce(
-    (sum: number, r: ToolRecommendation) => sum + (r.monthlySavings ?? 0), 0
+    (sum: number, r: { monthlySavings?: number }) => sum + (r.monthlySavings ?? 0),
+    0
   )
-  const totalAnnualSavings = recommendations.reduce(
-    (sum: number, r: ToolRecommendation) => sum + (r.annualSavings ?? 0), 0
-  )
+  const totalAnnualSavings = totalMonthlySavings * 12
   void totalAnnualSavings
 
   return (
