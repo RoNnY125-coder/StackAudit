@@ -1,69 +1,69 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase"
 
-export const revalidate = 60 // revalidate every 60 seconds
+// Cache for 60 seconds so the homepage doesn't hammer Supabase on every visit
+export const revalidate = 60
 
 export async function GET() {
   try {
-    // Total audit count
+    // 1. Total audit count
     const { count, error: countError } = await supabaseAdmin
       .from("audits")
       .select("*", { count: "exact", head: true })
 
     if (countError) throw countError
 
-    // Average monthly savings — computed from all rows
-    const { data: savingsData, error: savingsError } = await supabaseAdmin
+    // 2. Average monthly savings
+    // Recompute from savings_json rows so stale stored totals don't skew the average
+    const { data: rows, error: rowsError } = await supabaseAdmin
       .from("audits")
-      .select("total_monthly_savings, recommendations_json:savings_json")
+      .select("savings_json, total_monthly_savings")
       .order("created_at", { ascending: false })
       .limit(500)
 
-    if (savingsError) throw savingsError
+    if (rowsError) throw rowsError
 
-    // For each audit, recompute totalMonthlySavings from savings_json rows
-    // so the average reflects the fixed engine, not stale stored totals
-    const correctedSavings = (savingsData ?? []).map((row) => {
-      const recs = Array.isArray(row.recommendations_json)
-        ? row.recommendations_json
-        : []
-      const computed = recs.reduce(
+    const savingsPerAudit = (rows ?? []).map((row) => {
+      const recs = Array.isArray(row.savings_json) ? row.savings_json : []
+      const computed: number = recs.reduce(
         (sum: number, r: { monthlySavings?: number }) =>
           sum + (r.monthlySavings ?? 0),
         0
       )
-      // Use computed if it differs significantly from stored (old engine rows)
+      // If computed > 0 use it (fixed engine), otherwise fall back to stored value
       return computed > 0 ? computed : (row.total_monthly_savings ?? 0)
     })
 
-    const avgSavings =
-      correctedSavings.length > 0
+    const avgMonthlySavings =
+      savingsPerAudit.length > 0
         ? Math.round(
-            correctedSavings.reduce((a, b) => a + b, 0) /
-              correctedSavings.length
+            savingsPerAudit.reduce((a, b) => a + b, 0) / savingsPerAudit.length
           )
         : 0
 
-    // Most recent audit timestamp
-    const { data: latestRow, error: latestError } = await supabaseAdmin
+    // 3. Most recent audit timestamp
+    const { data: latest, error: latestError } = await supabaseAdmin
       .from("audits")
       .select("created_at")
       .order("created_at", { ascending: false })
       .limit(1)
       .single()
 
+    // PGRST116 = no rows found — not a real error
     if (latestError && latestError.code !== "PGRST116") throw latestError
 
     return NextResponse.json({
       totalAudits: count ?? 0,
-      avgMonthlySavings: avgSavings,
-      lastAuditAt: latestRow?.created_at ?? null,
+      avgMonthlySavings,
+      lastAuditAt: latest?.created_at ?? null,
     })
   } catch (err) {
-    console.error("[stats]", err)
-    return NextResponse.json(
-      { totalAudits: 0, avgMonthlySavings: 0, lastAuditAt: null },
-      { status: 500 }
-    )
+    console.error("[/api/stats]", err)
+    // Return zeros rather than a 500 so the UI degrades gracefully
+    return NextResponse.json({
+      totalAudits: 0,
+      avgMonthlySavings: 0,
+      lastAuditAt: null,
+    })
   }
 }
