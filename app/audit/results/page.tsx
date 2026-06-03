@@ -87,6 +87,16 @@ export default function ResultsPage() {
             <Download className="w-5 h-5" /> Download PDF Report
           </button>
         </div>
+
+        {/* Internal link to homepage — SEO crawlability */}
+        <div className="mt-8 text-center print:hidden">
+          <Link
+            href="/"
+            className="text-sm text-on-surface-variant hover:text-primary transition-colors"
+          >
+            ← Back to StackAudit
+          </Link>
+        </div>
       </main>
 
       <SaveReportModal
