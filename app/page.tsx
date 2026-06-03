@@ -5,7 +5,6 @@ import Footer from "@/components/layout/Footer"
 import dynamic from "next/dynamic"
 
 const HowItWorks = dynamic(() => import("@/components/landing/HowItWorks"))
-const SocialProof = dynamic(() => import("@/components/landing/SocialProof"))
 
 export default function LandingPage() {
   return (
@@ -15,7 +14,6 @@ export default function LandingPage() {
         <Hero />
         <Ticker />
         <HowItWorks />
-        <SocialProof />
       </main>
       <Footer />
     </div>
