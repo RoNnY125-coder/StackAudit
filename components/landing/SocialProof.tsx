@@ -89,27 +89,7 @@ export default function SocialProof() {
     <section className="max-w-7xl mx-auto px-4 lg:px-8 mb-24">
       <h2 className="sr-only">Audit Statistics</h2>
       <div className="bg-surface-container border border-outline-variant rounded-xl overflow-hidden">
-        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant">
-
-          {/* Audits run */}
-          <div className="px-6 py-5 text-center">
-            <p className={`text-2xl font-bold text-on-surface transition-opacity duration-500 ${dimClass}`}>
-              {stats.totalAudits > 0
-                ? stats.totalAudits.toLocaleString()
-                : loaded ? "0" : "—"}
-            </p>
-            <p className="text-sm text-on-surface-variant">audits run</p>
-          </div>
-
-          {/* Avg saving */}
-          <div className="px-6 py-5 text-center">
-            <p className={`text-2xl font-bold text-primary transition-opacity duration-500 ${dimClass}`}>
-              {stats.avgMonthlySavings > 0
-                ? `${formatCurrency(stats.avgMonthlySavings)}/mo`
-                : loaded ? "$0/mo" : "—"}
-            </p>
-            <p className="text-sm text-on-surface-variant">avg saving found</p>
-          </div>
+        <div className="grid grid-cols-1 divide-y sm:divide-y-0 divide-outline-variant">
 
           {/* Last audit */}
           <div className="px-6 py-5 text-center">
