@@ -88,30 +88,36 @@ function loadSavedSettings(): { emailSavings: boolean; weeklyUpdates: boolean } 
 }
 
 export default function SettingsPage() {
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === "undefined") return true
-    // Check localStorage first, then fall back to current class
-    const saved = localStorage.getItem("stackaudit_theme")
-    if (saved === "light") return false
-    if (saved === "dark") return true
-    return document.documentElement.classList.contains("dark")
-  })
+  const [isDark, setIsDark] = useState(true)
   const [savedSettings] = useState(loadSavedSettings)
   const [emailSavings, setEmailSavings] = useState(savedSettings.emailSavings)
   const [weeklyUpdates, setWeeklyUpdates] = useState(savedSettings.weeklyUpdates)
   const [clearMsg, setClearMsg] = useState("")
 
-  // Apply dark mode class to <html> and persist preference
+  // On mount: read saved theme from localStorage and reflect it in state
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-    localStorage.setItem("stackaudit_theme", darkMode ? "dark" : "light")
-  }, [darkMode])
+    try {
+      const saved = localStorage.getItem("stackaudit_theme")
+      // If no preference saved yet, default is dark (matches the app default)
+      setIsDark(saved !== "light")
+    } catch {}
+  }, [])
 
-  // Persist notification settings to localStorage
+  // Apply theme class to <html> whenever isDark changes
+  useEffect(() => {
+    try {
+      const root = document.documentElement
+      if (isDark) {
+        root.classList.remove("light")
+        localStorage.setItem("stackaudit_theme", "dark")
+      } else {
+        root.classList.add("light")
+        localStorage.setItem("stackaudit_theme", "light")
+      }
+    } catch {}
+  }, [isDark])
+
+  // Persist notification settings
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -122,7 +128,7 @@ export default function SettingsPage() {
   }, [emailSavings, weeklyUpdates])
 
   function handleClearFormData() {
-    localStorage.removeItem("stackaudit_form")
+    try { localStorage.removeItem("stackaudit_form") } catch {}
     setClearMsg("Form data cleared")
     setTimeout(() => setClearMsg(""), 3000)
   }
@@ -132,19 +138,27 @@ export default function SettingsPage() {
       <TopBar />
       <main className="max-w-[640px] mx-auto px-4 pt-24 pb-16" id="main-content">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-on-surface tracking-tight">Settings</h1>
-          <p className="text-on-surface-variant mt-1 text-sm">Manage your StackAudit preferences.</p>
+          <h1 className="text-3xl font-bold text-on-surface tracking-tight">
+            Settings
+          </h1>
+          <p className="text-on-surface-variant mt-1 text-sm">
+            Manage your StackAudit preferences.
+          </p>
         </div>
 
         <Section title="Appearance">
           <SettingRow
             label="Dark mode"
-            description="StackAudit is optimized for dark mode"
+            description={
+              isDark
+                ? "Currently using dark mode"
+                : "Currently using light mode"
+            }
           >
             <Toggle
               id="toggle-dark-mode"
-              checked={darkMode}
-              onChange={setDarkMode}
+              checked={isDark}
+              onChange={setIsDark}
             />
           </SettingRow>
         </Section>
@@ -224,3 +238,4 @@ export default function SettingsPage() {
     </div>
   )
 }
+

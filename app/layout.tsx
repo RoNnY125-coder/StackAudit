@@ -79,12 +79,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("stackaudit_theme");if(t==="light")document.documentElement.classList.remove("dark")}catch(e){}})()`,
+            __html: `
+      (function() {
+        try {
+          var theme = localStorage.getItem('stackaudit_theme');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.remove('light');
+          }
+        } catch(e) {}
+      })();
+    `,
           }}
         />
       </head>
