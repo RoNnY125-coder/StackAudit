@@ -87,23 +87,24 @@ function loadSavedSettings(): { emailSavings: boolean; weeklyUpdates: boolean } 
   return { emailSavings: false, weeklyUpdates: false }
 }
 
+function loadSavedTheme(): boolean {
+  if (typeof window === "undefined") return true // default dark on SSR
+  try {
+    return localStorage.getItem("stackaudit_theme") !== "light"
+  } catch {
+    return true
+  }
+}
+
 export default function SettingsPage() {
-  const [isDark, setIsDark] = useState(true)
+  const [isDark, setIsDark] = useState<boolean>(loadSavedTheme)
   const [savedSettings] = useState(loadSavedSettings)
   const [emailSavings, setEmailSavings] = useState(savedSettings.emailSavings)
   const [weeklyUpdates, setWeeklyUpdates] = useState(savedSettings.weeklyUpdates)
   const [clearMsg, setClearMsg] = useState("")
 
-  // On mount: read saved theme from localStorage and reflect it in state
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("stackaudit_theme")
-      // If no preference saved yet, default is dark (matches the app default)
-      setIsDark(saved !== "light")
-    } catch {}
-  }, [])
-
   // Apply theme class to <html> whenever isDark changes
+  // Writing to the DOM is the correct use of useEffect
   useEffect(() => {
     try {
       const root = document.documentElement
