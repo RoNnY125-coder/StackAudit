@@ -87,36 +87,11 @@ function loadSavedSettings(): { emailSavings: boolean; weeklyUpdates: boolean } 
   return { emailSavings: false, weeklyUpdates: false }
 }
 
-function loadSavedTheme(): boolean {
-  if (typeof window === "undefined") return true // default dark on SSR
-  try {
-    return localStorage.getItem("stackaudit_theme") !== "light"
-  } catch {
-    return true
-  }
-}
-
 export default function SettingsPage() {
-  const [isDark, setIsDark] = useState<boolean>(loadSavedTheme)
   const [savedSettings] = useState(loadSavedSettings)
   const [emailSavings, setEmailSavings] = useState(savedSettings.emailSavings)
   const [weeklyUpdates, setWeeklyUpdates] = useState(savedSettings.weeklyUpdates)
   const [clearMsg, setClearMsg] = useState("")
-
-  // Apply theme class to <html> whenever isDark changes
-  // Writing to the DOM is the correct use of useEffect
-  useEffect(() => {
-    try {
-      const root = document.documentElement
-      if (isDark) {
-        root.classList.remove("light")
-        localStorage.setItem("stackaudit_theme", "dark")
-      } else {
-        root.classList.add("light")
-        localStorage.setItem("stackaudit_theme", "light")
-      }
-    } catch {}
-  }, [isDark])
 
   // Persist notification settings
   useEffect(() => {
@@ -147,22 +122,6 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        <Section title="Appearance">
-          <SettingRow
-            label="Dark mode"
-            description={
-              isDark
-                ? "Currently using dark mode"
-                : "Currently using light mode"
-            }
-          >
-            <Toggle
-              id="toggle-dark-mode"
-              checked={isDark}
-              onChange={setIsDark}
-            />
-          </SettingRow>
-        </Section>
 
         <Section title="Notifications">
           <SettingRow

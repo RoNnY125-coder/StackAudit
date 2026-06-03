@@ -113,69 +113,12 @@
   --spacing-margin: 1.5rem;
 }
 
-/* ── Light mode token overrides ─────────────────────────────────────────────
-   Applied when <html class="light"> is set by the theme toggle in settings.
-   All values use Material Design 3 light tonal palette for the teal primary.
-────────────────────────────────────────────────────────────────────────── */
-:root.light {
-  --color-background:                  #f4fbf9;
-  --color-surface:                     #f4fbf9;
-  --color-surface-dim:                 #d5e5e1;
-  --color-surface-bright:              #f4fbf9;
-  --color-surface-container-lowest:    #ffffff;
-  --color-surface-container-low:       #eff5f3;
-  --color-surface-container:           #e9efed;
-  --color-surface-container-high:      #e3eae7;
-  --color-surface-container-highest:   #dde4e1;
-  --color-surface-variant:             #dae5e1;
-  --color-on-surface:                  #161d1b;
-  --color-on-surface-variant:          #3f4947;
-  --color-on-background:               #161d1b;
-  --color-inverse-surface:             #2b3230;
-  --color-inverse-on-surface:          #ecf2ef;
-  --color-outline:                     #6f7976;
-  --color-outline-variant:             #bec9c5;
-  --color-primary:                     #006b5f;
-  --color-on-primary:                  #ffffff;
-  --color-primary-container:           #9df2de;
-  --color-on-primary-container:        #00201c;
-  --color-primary-fixed:               #9df2de;
-  --color-primary-fixed-dim:           #81d5c2;
-  --color-on-primary-fixed:            #00201c;
-  --color-on-primary-fixed-variant:    #005048;
-  --color-inverse-primary:             #4fdbc8;
-  --color-surface-tint:                #006b5f;
-  --color-secondary:                   #4a4753;
-  --color-on-secondary:                #ffffff;
-  --color-secondary-container:         #cdc8d8;
-  --color-on-secondary-container:      #161323;
-  --color-tertiary:                    #7d3100;
-  --color-on-tertiary:                 #ffffff;
-  --color-tertiary-container:          #ffdbd0;
-  --color-on-tertiary-container:       #2f0f00;
-  --color-error:                       #ba1a1a;
-  --color-on-error:                    #ffffff;
-  --color-error-container:             #ffdad6;
-  --color-on-error-container:          #410002;
-  --color-foreground:                  #161d1b;
-  --color-muted:                       #e9efed;
-  --color-muted-foreground:            #3f4947;
-  --color-popover:                     #f4fbf9;
-  --color-popover-foreground:          #161d1b;
-  --color-card:                        #f4fbf9;
-  --color-card-foreground:             #161d1b;
-  --color-border:                      #bec9c5;
-  --color-input:                       #bec9c5;
-  --color-ring:                        #006b5f;
-}
 
 @layer base {
   :root {
     color-scheme: dark;
   }
-  :root.light {
-    color-scheme: light;
-  }
+
   * {
     @apply border-outline-variant;
   }
