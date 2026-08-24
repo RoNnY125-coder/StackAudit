@@ -11,7 +11,6 @@ import RecommendationRow from "@/components/results/RecommendationRow"
 import AIAnalysis from "@/components/results/AIAnalysis"
 import CTABlock from "@/components/results/CTABlock"
 import SaveReportModal from "@/components/modals/SaveReportModal"
-import ProReportModal from "@/components/modals/ProReportModal"
 
 function getStoredResult(): AuditResult | null {
   if (typeof window === "undefined") return null
@@ -26,7 +25,6 @@ function getStoredResult(): AuditResult | null {
 export default function ResultsPage() {
   const [result] = useState<AuditResult | null>(getStoredResult)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isProModalOpen, setIsProModalOpen] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -81,7 +79,7 @@ export default function ResultsPage() {
             <Save className="w-5 h-5" /> Save Report
           </button>
           <button
-            onClick={() => setIsProModalOpen(true)}
+            onClick={() => window.print()}
             className="flex items-center gap-2 bg-surface-container hover:bg-surface-container-high border border-outline-variant px-6 py-3 rounded-lg font-bold text-on-surface transition-colors"
           >
             <Download className="w-5 h-5" /> Download PDF Report
@@ -102,11 +100,6 @@ export default function ResultsPage() {
       <SaveReportModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
-      <ProReportModal
-        isOpen={isProModalOpen}
-        onClose={() => setIsProModalOpen(false)}
-        slug={result.shareSlug}
       />
     </div>
   )

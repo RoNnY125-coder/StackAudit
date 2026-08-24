@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { WebAppJsonLd } from "@/components/seo/JsonLd"
+import SmoothScroll from "@/components/layout/SmoothScroll"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"], display: "swap" })
@@ -35,8 +36,6 @@ export const metadata: Metadata = {
     title: "StackAudit — Free AI Tool Spend Audit for Dev Teams",
     description:
       "Find wasted AI tool spend in 60 seconds. Free audit, no login required.",
-    // No images key — omit entirely until /og-default.png is created
-    // Adding a 404 image is worse than no image
   },
   twitter: {
     card: "summary",
@@ -75,7 +74,6 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-background text-on-surface antialiased`}
       >
-        {/* Inline theme script — runs before first paint, prevents flash */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('stackaudit_theme');if(t==='light'){document.documentElement.classList.add('light')}else{document.documentElement.classList.remove('light')}}catch(e){}})()`,
@@ -85,7 +83,9 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only">
           Skip to main content
         </a>
-        {children}
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   )
