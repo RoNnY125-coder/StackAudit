@@ -38,10 +38,6 @@ export default function ResultsPage() {
   const totalMonthlySavings = result.recommendations.reduce(
     (sum, r) => sum + (r.monthlySavings ?? 0), 0
   )
-  const totalAnnualSavings = result.recommendations.reduce(
-    (sum, r) => sum + (r.annualSavings ?? 0), 0
-  )
-  void totalAnnualSavings
 
   return (
     <div className="min-h-screen bg-background">
