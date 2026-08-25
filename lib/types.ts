@@ -6,8 +6,9 @@
  *   - Form types  — used by SpendForm, ToolRow, useAuditForm
  *   - Engine types — used by auditEngine, audit-rules, and API routes */
 
-// // Catalog & form types
-// /**
+// Catalog & form types
+
+/**
  * A static entry from the TOOL_CATALOG in lib/mock-data.ts.
  * Describes what a tool costs and which plans it offers — not user-specific. */
 export interface ToolCatalogEntry {
@@ -49,8 +50,9 @@ export interface ToolEntry {
   usageScore: number;
 }
 
-// // Audit engine types
-// /**
+// Audit engine types
+
+/**
  * The form state passed into runAudit().
  * Contains everything needed to evaluate each tool and generate recommendations. */
 export type FormState = {

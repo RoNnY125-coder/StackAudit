@@ -32,8 +32,8 @@ import { FormState, ToolEntry, ToolRecommendation } from "./types";
 
 const log = createLogger("auditEngine");
 
-// // Rule map — catalog tool ID → audit function
-// const RULE_MAP: Record<string, RuleFn> = {
+// Rule map — catalog tool ID → audit function
+const RULE_MAP: Record<string, RuleFn> = {
   cursor: auditCursor,
   "github-copilot": auditGithubCopilot,
   anthropic: auditAnthropic,
@@ -47,8 +47,9 @@ const log = createLogger("auditEngine");
   pagerduty: auditPagerDuty,
 };
 
-// // Cross-tool redundancy checks
-// /**
+// Cross-tool redundancy checks
+
+/**
  * Detect overlapping tools that serve the same purpose.
  * Returns extra ToolRecommendation entries appended to the main list.
  *
@@ -155,8 +156,9 @@ function checkRedundancy(
   return extras;
 }
 
-// // Public entry point
-// /**
+// Public entry point
+
+/**
  * Run a full audit against the submitted form state.
  *
  * @param form - Team size, use case, and list of active tool entries

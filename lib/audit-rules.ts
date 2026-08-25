@@ -14,8 +14,9 @@
 
 import { ToolEntry, ToolRecommendation } from "./types";
 
-// // Shared helper factories
-// /** Build an "overspending" recommendation with pre-computed savings. */
+// Shared helper factories
+
+/** Build an "overspending" recommendation with pre-computed savings. */
 function overspending(
   entry: ToolEntry,
   projected: number,
@@ -106,8 +107,9 @@ function optimal(
   };
 }
 
-// // Tool rule functions
-// /**
+// Tool rule functions
+
+/**
  * Cursor — AI code editor.
  *
  * Business plan adds SSO + privacy mode, only justified at 4+ seats.
@@ -623,6 +625,7 @@ export function auditPagerDuty(entry: ToolEntry): ToolRecommendation {
   return optimal(entry);
 }
 
-// // Export the RuleFn type so auditEngine.ts can type the RULE_MAP
-// /** Function signature every tool rule must satisfy. */
+// Export the RuleFn type so auditEngine.ts can type the RULE_MAP
+
+/** Function signature every tool rule must satisfy. */
 export type RuleFn = (entry: ToolEntry, useCase: string) => ToolRecommendation;
