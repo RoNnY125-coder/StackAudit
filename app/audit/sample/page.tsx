@@ -1,29 +1,36 @@
-import Link from "next/link"
-import { ArrowLeft, Info } from "lucide-react"
-import { MOCK_AUDIT_RESULT } from "@/lib/mock-data"
-import SavingsHero from "@/components/results/SavingsHero"
-import RecommendationRow from "@/components/results/RecommendationRow"
-import AIAnalysis from "@/components/results/AIAnalysis"
-import TopBar from "@/components/layout/TopBar"
+import Link from "next/link";
+import { ArrowLeft, Info } from "lucide-react";
+import { MOCK_AUDIT_RESULT } from "@/lib/mock-data";
+import SavingsHero from "@/components/results/SavingsHero";
+import RecommendationRow from "@/components/results/RecommendationRow";
+import AIAnalysis from "@/components/results/AIAnalysis";
+import TopBar from "@/components/layout/TopBar";
 
 export const metadata = {
   title: "Sample AI Spend Audit — See How It Works",
-  description: "See a real example of an AI spend audit for a 12-person engineering team. Find $1,840/month in potential savings across Cursor, Copilot, ChatGPT, and Vercel.",
+  description:
+    "See a real example of an AI spend audit for a 12-person engineering team. Find $1,840/month in potential savings across Cursor, Copilot, ChatGPT, and Vercel.",
   alternates: { canonical: "https://stackaudit.app/audit/sample" },
-}
+};
 
 export default function SampleAuditPage() {
-  const result = MOCK_AUDIT_RESULT
+  const result = MOCK_AUDIT_RESULT;
 
   return (
     <div className="min-h-screen bg-background">
       <TopBar />
-      <main className="max-w-[680px] mx-auto px-4 pt-24 pb-16" id="main-content">
+      <main
+        className="max-w-[680px] mx-auto px-4 pt-24 pb-16"
+        id="main-content"
+      >
         <div className="flex items-center gap-3 bg-surface border border-outline-variant rounded-lg px-4 py-3 mb-8 text-sm">
           <Info className="w-4 h-4 text-primary shrink-0" />
           <p className="text-on-surface-variant">
             This is a sample audit.{" "}
-            <Link href="/audit" className="text-primary hover:underline font-medium">
+            <Link
+              href="/audit"
+              className="text-primary hover:underline font-medium"
+            >
               Run your own free audit
             </Link>{" "}
             to see your real savings.
@@ -48,5 +55,5 @@ export default function SampleAuditPage() {
         <AIAnalysis text={result.aiAnalysis} />
       </main>
     </div>
-  )
+  );
 }

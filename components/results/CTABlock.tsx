@@ -1,27 +1,27 @@
-"use client"
-import { useState } from "react"
-import { createLogger } from "@/lib/logger"
+"use client";
+import { useState } from "react";
+import { createLogger } from "@/lib/logger";
 
-const log = createLogger("CTABlock")
+const log = createLogger("CTABlock");
 
 export default function CTABlock({ savings }: { savings: number }) {
-  const [email, setEmail] = useState("")
-  const [submitted, setSubmitted] = useState(false)
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
+    e.preventDefault();
+    if (!email) return;
     try {
       await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, savings, type: "notify" }),
-      })
-      setSubmitted(true)
+      });
+      setSubmitted(true);
     } catch (err) {
-      log.error("Failed to submit lead", err)
+      log.error("Failed to submit lead", err);
     }
-  }
+  };
 
   return (
     <div className="bg-surface border border-outline-variant rounded-xl p-6 flex flex-col sm:flex-row justify-between items-center gap-4 my-8">
@@ -42,7 +42,10 @@ export default function CTABlock({ savings }: { savings: number }) {
           Thanks! We&apos;ll keep you posted.
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex w-full sm:w-auto shrink-0">
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full sm:w-auto shrink-0"
+        >
           <input
             type="email"
             placeholder="Email address"
@@ -60,5 +63,5 @@ export default function CTABlock({ savings }: { savings: number }) {
         </form>
       )}
     </div>
-  )
+  );
 }

@@ -1,25 +1,28 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Menu } from "lucide-react"
-import { useState } from "react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
+import { useState } from "react";
 
 export default function TopBar() {
-  const pathname = usePathname()
-  const isAudit = pathname?.startsWith("/audit")
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const pathname = usePathname();
+  const isAudit = pathname?.startsWith("/audit");
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
     { label: "Audits", href: "/audit" },
     { label: "Resources", href: "/resources" },
     { label: "Settings", href: "/settings" },
-  ]
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-surface border-b border-outline-variant z-50 flex items-center justify-between px-4 lg:px-6 print:hidden">
       <div className="flex items-center gap-4">
-        <Link href="/" className="font-mono font-bold text-primary text-lg tracking-tight">
+        <Link
+          href="/"
+          className="font-mono font-bold text-primary text-lg tracking-tight"
+        >
           StackAudit
         </Link>
       </div>
@@ -44,7 +47,9 @@ export default function TopBar() {
 
       {isAudit && (
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2">
-          <span className="text-sm text-on-surface-variant font-mono">Running Audit...</span>
+          <span className="text-sm text-on-surface-variant font-mono">
+            Running Audit...
+          </span>
         </div>
       )}
 
@@ -80,5 +85,5 @@ export default function TopBar() {
         </div>
       )}
     </header>
-  )
+  );
 }

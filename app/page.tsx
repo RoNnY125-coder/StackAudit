@@ -1,10 +1,10 @@
-import TopBar from "@/components/layout/TopBar"
-import Hero from "@/components/landing/Hero"
-import Ticker from "@/components/landing/Ticker"
-import Footer from "@/components/layout/Footer"
-import dynamic from "next/dynamic"
+import TopBar from "@/components/layout/TopBar";
+import Hero from "@/components/landing/Hero";
+import Ticker from "@/components/landing/Ticker";
+import Footer from "@/components/layout/Footer";
+import dynamic from "next/dynamic";
 
-const HowItWorks = dynamic(() => import("@/components/landing/HowItWorks"))
+const HowItWorks = dynamic(() => import("@/components/landing/HowItWorks"));
 
 export default function LandingPage() {
   return (
@@ -17,5 +17,5 @@ export default function LandingPage() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

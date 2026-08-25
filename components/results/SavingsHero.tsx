@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { formatCurrency } from "@/lib/utils"
+import { useEffect, useState } from "react";
+import { formatCurrency } from "@/lib/utils";
 
 export default function SavingsHero({ amount }: { amount: number }) {
-  const [displayAmount, setDisplayAmount] = useState(0)
+  const [displayAmount, setDisplayAmount] = useState(0);
 
   useEffect(() => {
-    let start = 0
-    const duration = 1200
-    const increment = amount / (duration / 16) // 60fps
+    let start = 0;
+    const duration = 1200;
+    const increment = amount / (duration / 16); // 60fps
 
     const animate = () => {
-      start += increment
+      start += increment;
       if (start < amount) {
-        setDisplayAmount(Math.floor(start))
-        requestAnimationFrame(animate)
+        setDisplayAmount(Math.floor(start));
+        requestAnimationFrame(animate);
       } else {
-        setDisplayAmount(amount)
+        setDisplayAmount(amount);
       }
-    }
-    requestAnimationFrame(animate)
-  }, [amount])
+    };
+    requestAnimationFrame(animate);
+  }, [amount]);
 
   return (
     <div className="text-center mt-4">
@@ -35,5 +35,5 @@ export default function SavingsHero({ amount }: { amount: number }) {
         per month · {formatCurrency(amount * 12)} per year
       </p>
     </div>
-  )
+  );
 }

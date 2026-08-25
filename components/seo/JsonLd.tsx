@@ -1,4 +1,4 @@
-const BASE = "https://stack-audit-ashy.vercel.app"
+const BASE = "https://stack-audit-ashy.vercel.app";
 
 export function WebAppJsonLd() {
   const schema = {
@@ -22,14 +22,14 @@ export function WebAppJsonLd() {
       name: "StackAudit",
       url: BASE,
     },
-  }
+  };
 
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
-  )
+  );
 }
 
 export function FAQJsonLd() {
@@ -78,12 +78,12 @@ export function FAQJsonLd() {
         },
       },
     ],
-  }
+  };
 
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
-  )
+  );
 }

@@ -13,12 +13,12 @@
  * so you can instantly find the source of any log in DevTools.
  */
 
-const IS_DEV = process.env.NODE_ENV !== "production"
+const IS_DEV = process.env.NODE_ENV !== "production";
 
 export interface Logger {
-  info:  (msg: string, data?: unknown) => void
-  warn:  (msg: string, data?: unknown) => void
-  error: (msg: string, data?: unknown) => void
+  info: (msg: string, data?: unknown) => void;
+  warn: (msg: string, data?: unknown) => void;
+  error: (msg: string, data?: unknown) => void;
 }
 
 /**
@@ -28,32 +28,32 @@ export interface Logger {
  * @returns Logger object with info / warn / error methods
  */
 export function createLogger(module: string): Logger {
-  const prefix = `[StackAudit/${module}]`
+  const prefix = `[StackAudit/${module}]`;
 
   return {
     info(msg, data) {
-      if (!IS_DEV) return
+      if (!IS_DEV) return;
       if (data !== undefined) {
-        console.info(`${prefix} ℹ ${msg}`, data)
+        console.info(`${prefix} ℹ ${msg}`, data);
       } else {
-        console.info(`${prefix} ℹ ${msg}`)
+        console.info(`${prefix} ℹ ${msg}`);
       }
     },
     warn(msg, data) {
-      if (!IS_DEV) return
+      if (!IS_DEV) return;
       if (data !== undefined) {
-        console.warn(`${prefix} ⚠ ${msg}`, data)
+        console.warn(`${prefix} ⚠ ${msg}`, data);
       } else {
-        console.warn(`${prefix} ⚠ ${msg}`)
+        console.warn(`${prefix} ⚠ ${msg}`);
       }
     },
     error(msg, data) {
-      if (!IS_DEV) return
+      if (!IS_DEV) return;
       if (data !== undefined) {
-        console.error(`${prefix} ✖ ${msg}`, data)
+        console.error(`${prefix} ✖ ${msg}`, data);
       } else {
-        console.error(`${prefix} ✖ ${msg}`)
+        console.error(`${prefix} ✖ ${msg}`);
       }
     },
-  }
+  };
 }

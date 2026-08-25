@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 const steps = [
   {
@@ -19,7 +19,7 @@ const steps = [
     description:
       "Get a shareable report with exact downgrade and cancellation recommendations. See your potential monthly and annual savings instantly.",
   },
-]
+];
 
 export default function HowItWorks() {
   return (
@@ -37,7 +37,10 @@ export default function HowItWorks() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 relative">
         <div className="hidden md:block absolute top-12 left-1/6 right-1/6 h-px bg-outline-variant/50 -z-10"></div>
         {steps.map((step) => (
-          <div key={step.number} className="flex flex-col items-center md:items-start text-center md:text-left bg-surface-container/30 p-8 rounded-3xl border border-outline-variant/20 relative backdrop-blur-sm">
+          <div
+            key={step.number}
+            className="flex flex-col items-center md:items-start text-center md:text-left bg-surface-container/30 p-8 rounded-3xl border border-outline-variant/20 relative backdrop-blur-sm"
+          >
             <span className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary font-bold text-xl mb-6 border border-primary/20">
               {step.number}
             </span>
@@ -57,17 +60,26 @@ export default function HowItWorks() {
           Windsurf, Vercel, Datadog, Notion, Linear, PagerDuty, and more.
         </p>
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm font-medium">
-          <Link href="/resources/cursor-vs-copilot" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+          <Link
+            href="/resources/cursor-vs-copilot"
+            className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+          >
             Cursor vs Copilot pricing <span aria-hidden="true">&rarr;</span>
           </Link>
-          <Link href="/resources/ai-tool-pricing-guide" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+          <Link
+            href="/resources/ai-tool-pricing-guide"
+            className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+          >
             AI tool pricing guide <span aria-hidden="true">&rarr;</span>
           </Link>
-          <Link href="/resources" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+          <Link
+            href="/resources"
+            className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+          >
             All resources <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
       </div>
     </section>
-  )
+  );
 }

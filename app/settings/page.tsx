@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import TopBar from "@/components/layout/TopBar"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import TopBar from "@/components/layout/TopBar";
 
 function Toggle({
   id,
@@ -10,10 +10,10 @@ function Toggle({
   onChange,
   disabled,
 }: {
-  id: string
-  checked: boolean
-  onChange?: (v: boolean) => void
-  disabled?: boolean
+  id: string;
+  checked: boolean;
+  onChange?: (v: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
     <button
@@ -32,22 +32,24 @@ function Toggle({
         }`}
       />
     </button>
-  )
+  );
 }
 
 function Section({
   title,
   children,
 }: {
-  title: string
-  children: React.ReactNode
+  title: string;
+  children: React.ReactNode;
 }) {
   return (
     <section className="bg-surface border border-outline-variant rounded-xl p-6 mb-6">
-      <h2 className="font-mono text-label text-primary uppercase tracking-wider mb-4">{title}</h2>
+      <h2 className="font-mono text-label text-primary uppercase tracking-wider mb-4">
+        {title}
+      </h2>
       <div className="space-y-4">{children}</div>
     </section>
-  )
+  );
 }
 
 function SettingRow({
@@ -55,64 +57,79 @@ function SettingRow({
   description,
   children,
 }: {
-  label: string
-  description?: string
-  children: React.ReactNode
+  label: string;
+  description?: string;
+  children: React.ReactNode;
 }) {
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="flex-1">
         <p className="text-on-surface font-medium text-sm">{label}</p>
         {description && (
-          <p className="text-on-surface-variant text-xs mt-0.5">{description}</p>
+          <p className="text-on-surface-variant text-xs mt-0.5">
+            {description}
+          </p>
         )}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
-  )
+  );
 }
 
-function loadSavedSettings(): { emailSavings: boolean; weeklyUpdates: boolean } {
-  if (typeof window === "undefined") return { emailSavings: false, weeklyUpdates: false }
+function loadSavedSettings(): {
+  emailSavings: boolean;
+  weeklyUpdates: boolean;
+} {
+  if (typeof window === "undefined")
+    return { emailSavings: false, weeklyUpdates: false };
   try {
-    const saved = localStorage.getItem("stackaudit_settings")
+    const saved = localStorage.getItem("stackaudit_settings");
     if (saved) {
-      const s = JSON.parse(saved)
+      const s = JSON.parse(saved);
       return {
-        emailSavings: typeof s.emailSavings === "boolean" ? s.emailSavings : false,
-        weeklyUpdates: typeof s.weeklyUpdates === "boolean" ? s.weeklyUpdates : false,
-      }
+        emailSavings:
+          typeof s.emailSavings === "boolean" ? s.emailSavings : false,
+        weeklyUpdates:
+          typeof s.weeklyUpdates === "boolean" ? s.weeklyUpdates : false,
+      };
     }
   } catch {}
-  return { emailSavings: false, weeklyUpdates: false }
+  return { emailSavings: false, weeklyUpdates: false };
 }
 
 export default function SettingsPage() {
-  const [savedSettings] = useState(loadSavedSettings)
-  const [emailSavings, setEmailSavings] = useState(savedSettings.emailSavings)
-  const [weeklyUpdates, setWeeklyUpdates] = useState(savedSettings.weeklyUpdates)
-  const [clearMsg, setClearMsg] = useState("")
+  const [savedSettings] = useState(loadSavedSettings);
+  const [emailSavings, setEmailSavings] = useState(savedSettings.emailSavings);
+  const [weeklyUpdates, setWeeklyUpdates] = useState(
+    savedSettings.weeklyUpdates,
+  );
+  const [clearMsg, setClearMsg] = useState("");
 
   // Persist notification settings
   useEffect(() => {
     try {
       localStorage.setItem(
         "stackaudit_settings",
-        JSON.stringify({ emailSavings, weeklyUpdates })
-      )
+        JSON.stringify({ emailSavings, weeklyUpdates }),
+      );
     } catch {}
-  }, [emailSavings, weeklyUpdates])
+  }, [emailSavings, weeklyUpdates]);
 
   function handleClearFormData() {
-    try { localStorage.removeItem("stackaudit_form") } catch {}
-    setClearMsg("Form data cleared")
-    setTimeout(() => setClearMsg(""), 3000)
+    try {
+      localStorage.removeItem("stackaudit_form");
+    } catch {}
+    setClearMsg("Form data cleared");
+    setTimeout(() => setClearMsg(""), 3000);
   }
 
   return (
     <div className="min-h-screen bg-background">
       <TopBar />
-      <main className="max-w-[640px] mx-auto px-4 pt-24 pb-16" id="main-content">
+      <main
+        className="max-w-[640px] mx-auto px-4 pt-24 pb-16"
+        id="main-content"
+      >
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-on-surface tracking-tight">
             Settings
@@ -121,7 +138,6 @@ export default function SettingsPage() {
             Manage your StackAudit preferences.
           </p>
         </div>
-
 
         <Section title="Notifications">
           <SettingRow
@@ -175,8 +191,7 @@ export default function SettingsPage() {
         <Section title="About">
           <div className="space-y-2 text-sm text-on-surface-variant">
             <p>
-              <span className="text-on-surface font-medium">Version</span>{" "}
-              1.0.0
+              <span className="text-on-surface font-medium">Version</span> 1.0.0
             </p>
             <p>
               <span className="text-on-surface font-medium">Built by</span>{" "}
@@ -196,6 +211,5 @@ export default function SettingsPage() {
         </Section>
       </main>
     </div>
-  )
+  );
 }
-

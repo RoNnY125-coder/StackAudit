@@ -1,71 +1,70 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { X, CheckCircle2 } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState, useEffect, useRef } from "react";
+import { X, CheckCircle2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface SaveReportModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProps) {
-  const [email, setEmail] = useState("")
-  const [company, setCompany] = useState("")
-  const [role, setRole] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+export default function SaveReportModal({
+  isOpen,
+  onClose,
+}: SaveReportModalProps) {
+  const [email, setEmail] = useState("");
+  const [company, setCompany] = useState("");
+  const [role, setRole] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
-    }
+      if (e.key === "Escape") onClose();
+    };
     if (isOpen) {
-      document.addEventListener("keydown", handleEscape)
-      document.body.style.overflow = "hidden"
-      setTimeout(() => inputRef.current?.focus(), 50)
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
+      setTimeout(() => inputRef.current?.focus(), 50);
     }
     return () => {
-      document.removeEventListener("keydown", handleEscape)
-      document.body.style.overflow = "unset"
-    }
-  }, [isOpen, onClose])
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, onClose]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
     try {
-      const stored = sessionStorage.getItem("stackaudit_result")
-      const auditData = stored ? JSON.parse(stored) : null
+      const stored = sessionStorage.getItem("stackaudit_result");
+      const auditData = stored ? JSON.parse(stored) : null;
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, company, role, auditData }),
-      })
-      if (!res.ok) throw new Error("Failed")
-      setIsSuccess(true)
+      });
+      if (!res.ok) throw new Error("Failed");
+      setIsSuccess(true);
       setTimeout(() => {
-        setIsSuccess(false)
-        onClose()
-      }, 2000)
+        setIsSuccess(false);
+        onClose();
+      }, 2000);
     } catch {
-      alert("Something went wrong. Please try again.")
+      alert("Something went wrong. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 bg-background/90 flex items-center justify-center z-50 p-4">
-      <div
-        className="absolute inset-0"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0" onClick={onClose} aria-hidden="true" />
       <div
         role="dialog"
         aria-modal="true"
@@ -83,7 +82,10 @@ export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProp
         {!isSuccess ? (
           <>
             <div className="mb-6">
-              <h2 id="modal-title" className="text-xl font-bold text-on-surface mb-1">
+              <h2
+                id="modal-title"
+                className="text-xl font-bold text-on-surface mb-1"
+              >
                 Save your audit
               </h2>
               <p className="text-on-surface-variant text-sm">
@@ -103,7 +105,10 @@ export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProp
               />
 
               <div className="space-y-1">
-                <Label htmlFor="email" className="text-xs font-mono text-on-surface-variant uppercase">
+                <Label
+                  htmlFor="email"
+                  className="text-xs font-mono text-on-surface-variant uppercase"
+                >
                   Email
                 </Label>
                 <Input
@@ -119,7 +124,10 @@ export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProp
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="company" className="text-xs font-mono text-on-surface-variant uppercase">
+                <Label
+                  htmlFor="company"
+                  className="text-xs font-mono text-on-surface-variant uppercase"
+                >
                   Company
                 </Label>
                 <Input
@@ -133,7 +141,10 @@ export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProp
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="role" className="text-xs font-mono text-on-surface-variant uppercase">
+                <Label
+                  htmlFor="role"
+                  className="text-xs font-mono text-on-surface-variant uppercase"
+                >
                   Role
                 </Label>
                 <Input
@@ -162,11 +173,13 @@ export default function SaveReportModal({ isOpen, onClose }: SaveReportModalProp
         ) : (
           <div className="py-8 flex flex-col items-center justify-center text-center">
             <CheckCircle2 className="w-12 h-12 text-primary mb-4" />
-            <h2 className="text-xl font-bold text-on-surface mb-2">Report sent!</h2>
+            <h2 className="text-xl font-bold text-on-surface mb-2">
+              Report sent!
+            </h2>
             <p className="text-on-surface-variant">Check your inbox shortly.</p>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

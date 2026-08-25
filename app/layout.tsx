@@ -1,10 +1,10 @@
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { WebAppJsonLd } from "@/components/seo/JsonLd"
-import SmoothScroll from "@/components/layout/SmoothScroll"
-import "./globals.css"
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { WebAppJsonLd } from "@/components/seo/JsonLd";
+import SmoothScroll from "@/components/layout/SmoothScroll";
+import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" })
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
@@ -56,11 +56,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://stack-audit-ashy.vercel.app",
   },
-}
+};
 
 export const viewport = {
   themeColor: "#0e1513",
-}
+};
 
 export default function RootLayout({
   children,
@@ -83,10 +83,8 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only">
           Skip to main content
         </a>
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
-  )
+  );
 }

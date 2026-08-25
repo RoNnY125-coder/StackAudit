@@ -1,6 +1,6 @@
-import { MetadataRoute } from "next"
+import { MetadataRoute } from "next";
 
-const BASE = "https://stack-audit-ashy.vercel.app"
+const BASE = "https://stack-audit-ashy.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -13,5 +13,5 @@ export default function robots(): MetadataRoute.Robots {
     ],
     sitemap: `${BASE}/sitemap.xml`,
     host: BASE,
-  }
+  };
 }

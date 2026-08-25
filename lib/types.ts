@@ -4,128 +4,113 @@
  *
  * Split into two sections:
  *   - Form types  — used by SpendForm, ToolRow, useAuditForm
- *   - Engine types — used by auditEngine, audit-rules, and API routes
- */
+ *   - Engine types — used by auditEngine, audit-rules, and API routes */
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Catalog & form types
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
+// // Catalog & form types
+// /**
  * A static entry from the TOOL_CATALOG in lib/mock-data.ts.
- * Describes what a tool costs and which plans it offers — not user-specific.
- */
+ * Describes what a tool costs and which plans it offers — not user-specific. */
 export interface ToolCatalogEntry {
   /** Unique kebab-case identifier, e.g. "github-copilot". Used as the RULE_MAP key. */
-  id: string
+  id: string;
   /** Display name shown in the UI, e.g. "GitHub Copilot". */
-  name: string
+  name: string;
   /** Logical grouping: "dev-tools" | "llm-apis" | "infrastructure" | "productivity" */
-  category: "dev-tools" | "llm-apis" | "infrastructure" | "productivity"
+  category: "dev-tools" | "llm-apis" | "infrastructure" | "productivity";
   /**
    * Default per-unit price used to pre-fill the monthly spend when a user
    * first checks a tool in the form.
-   * For per-seat tools this is cost/seat; for APIs this is an estimate.
-   */
-  defaultPrice: number
+   * For per-seat tools this is cost/seat; for APIs this is an estimate. */
+  defaultPrice: number;
   /** Available billing plans for this tool, e.g. ["Free", "Pro", "Business"]. */
-  plans: string[]
+  plans: string[];
 }
 
 /**
  * A user-entered tool entry collected from the SpendForm.
- * Represents one row in the audit — what the user is actually paying.
- */
+ * Represents one row in the audit — what the user is actually paying. */
 export interface ToolEntry {
   /** Matches ToolCatalogEntry.id so the engine can look up the correct rule. */
-  id: string
+  id: string;
   /** Display name (copied from catalog or entered by user for custom tools). */
-  name: string
+  name: string;
   /** Category — determines seat-pricing behaviour in ToolRow. */
-  category: ToolCatalogEntry["category"]
+  category: ToolCatalogEntry["category"];
   /** Actual monthly spend in USD as entered by the user. */
-  monthlySpend: number
+  monthlySpend: number;
   /** Number of seats / users on this subscription. */
-  seats: number
+  seats: number;
   /** Current billing plan, e.g. "Business". Must be one of ToolCatalogEntry.plans. */
-  plan: string
+  plan: string;
   /**
    * Subjective daily usage score 0–10.
    * 0 = rarely used, 10 = used all day every day.
-   * Currently displayed in the UI but not yet used by audit rules.
-   */
-  usageScore: number
+   * Currently displayed in the UI but not yet used by audit rules. */
+  usageScore: number;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Audit engine types
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
+// // Audit engine types
+// /**
  * The form state passed into runAudit().
- * Contains everything needed to evaluate each tool and generate recommendations.
- */
+ * Contains everything needed to evaluate each tool and generate recommendations. */
 export type FormState = {
   /** Number of people on the team (used by per-seat pricing rules). */
-  teamSize: number
+  teamSize: number;
   /** Primary use case, e.g. "Software Engineering", "Marketing". */
-  useCase: string
+  useCase: string;
   /** Flat list of tools the user is paying for (monthlySpend > 0). */
-  tools: ToolEntry[]
-}
+  tools: ToolEntry[];
+};
 
 /**
  * A single actionable recommendation produced by a tool rule function.
- * One ToolRecommendation is rendered per row on the Results page.
- */
+ * One ToolRecommendation is rendered per row on the Results page. */
 export type ToolRecommendation = {
   /** Display name of the tool, e.g. "GitHub Copilot". */
-  tool: string
+  tool: string;
   /** The plan the user is currently on, e.g. "Business". */
-  currentPlan: string
+  currentPlan: string;
   /** What the user is paying right now (USD/month). */
-  currentSpend: number
+  currentSpend: number;
   /** Short imperative sentence shown as the headline action. */
-  recommendedAction: string
+  recommendedAction: string;
   /** Projected spend after implementing the recommendation (USD/month). */
-  projectedSpend: number
+  projectedSpend: number;
   /** Monthly savings = currentSpend − projectedSpend. Always ≥ 0. */
-  monthlySavings: number
+  monthlySavings: number;
   /** Annual savings = monthlySavings × 12. */
-  annualSavings: number
+  annualSavings: number;
   /**
    * How the recommendation row is styled on the Results page:
    * - "overspending" → red accent (direct money saved)
    * - "switch"       → amber accent (better plan fit, may or may not save money)
    * - "review"       → blue accent (flag for manual review)
-   * - "optimal"      → green accent (no changes needed)
-   */
-  status: "overspending" | "switch" | "review" | "optimal"
+   * - "optimal"      → green accent (no changes needed) */
+  status: "overspending" | "switch" | "review" | "optimal";
   /** One- or two-sentence explanation of the reasoning behind the recommendation. */
-  reason: string
+  reason: string;
   /** Optional affiliate/referral link for the recommended action */
-  affiliateUrl?: string
-}
+  affiliateUrl?: string;
+};
 
 /**
  * The full audit result returned by runAudit() and stored in sessionStorage.
- * This is the shape that the Results page consumes.
- */
+ * This is the shape that the Results page consumes. */
 export type AuditResult = {
   /** All per-tool + redundancy recommendations, in order. */
-  recommendations: ToolRecommendation[]
+  recommendations: ToolRecommendation[];
   /** Sum of all monthlySavings across recommendations. */
-  totalMonthlySavings: number
+  totalMonthlySavings: number;
   /** totalMonthlySavings × 12. */
-  totalAnnualSavings: number
+  totalAnnualSavings: number;
   /** Team size passed through from the form. */
-  teamSize: number
+  teamSize: number;
   /** Use case passed through from the form. */
-  useCase: string
+  useCase: string;
   /** Shareable URL slug — the Supabase row ID, or a random 6-char fallback. */
-  shareSlug: string
+  shareSlug: string;
   /** ISO 8601 timestamp of when this audit was generated. */
-  generatedAt: string
+  generatedAt: string;
   /** 100-word AI summary generated by Gemini, or a deterministic fallback. */
-  aiAnalysis: string
-}
+  aiAnalysis: string;
+};

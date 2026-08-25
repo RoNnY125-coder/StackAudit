@@ -1,10 +1,10 @@
-import Link from "next/link"
-import TopBar from "@/components/layout/TopBar"
+import Link from "next/link";
+import TopBar from "@/components/layout/TopBar";
 
 export const metadata = {
   title: "Page Not Found",
   description: "The page you are looking for does not exist.",
-}
+};
 
 export default function NotFound() {
   return (
@@ -39,5 +39,5 @@ export default function NotFound() {
         </div>
       </main>
     </div>
-  )
+  );
 }

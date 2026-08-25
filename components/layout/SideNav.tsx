@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 interface SideNavProps {
-  progress: number
+  progress: number;
 }
 
 export default function SideNav({ progress }: SideNavProps) {
@@ -9,7 +9,9 @@ export default function SideNav({ progress }: SideNavProps) {
     <aside className="fixed left-0 top-16 w-64 h-[calc(100vh-64px)] border-r border-outline-variant bg-surface-container hidden md:flex flex-col">
       <div className="p-4 border-b border-outline-variant">
         <h2 className="font-mono font-bold text-h2 mb-1">Audit Progress</h2>
-        <p className="text-label text-on-surface-variant mb-2">{progress}% Complete</p>
+        <p className="text-label text-on-surface-variant mb-2">
+          {progress}% Complete
+        </p>
         <div className="h-1.5 w-full bg-surface-container-highest rounded overflow-hidden">
           <div
             className="h-full bg-primary transition-all duration-300 ease-in-out"
@@ -31,5 +33,5 @@ export default function SideNav({ progress }: SideNavProps) {
         </p>
       </nav>
     </aside>
-  )
+  );
 }

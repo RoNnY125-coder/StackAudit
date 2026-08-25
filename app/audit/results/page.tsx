@@ -1,43 +1,44 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { ArrowLeft, Download, Save } from "lucide-react"
-import { AuditResult } from "@/lib/types"
-import SavingsHero from "@/components/results/SavingsHero"
-import ShareBar from "@/components/results/ShareBar"
-import RecommendationRow from "@/components/results/RecommendationRow"
-import AIAnalysis from "@/components/results/AIAnalysis"
-import CTABlock from "@/components/results/CTABlock"
-import SaveReportModal from "@/components/modals/SaveReportModal"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, Download, Save } from "lucide-react";
+import { AuditResult } from "@/lib/types";
+import SavingsHero from "@/components/results/SavingsHero";
+import ShareBar from "@/components/results/ShareBar";
+import RecommendationRow from "@/components/results/RecommendationRow";
+import AIAnalysis from "@/components/results/AIAnalysis";
+import CTABlock from "@/components/results/CTABlock";
+import SaveReportModal from "@/components/modals/SaveReportModal";
 
 function getStoredResult(): AuditResult | null {
-  if (typeof window === "undefined") return null
+  if (typeof window === "undefined") return null;
   try {
-    const stored = sessionStorage.getItem("stackaudit_result")
-    return stored ? JSON.parse(stored) : null
+    const stored = sessionStorage.getItem("stackaudit_result");
+    return stored ? JSON.parse(stored) : null;
   } catch {
-    return null
+    return null;
   }
 }
 
 export default function ResultsPage() {
-  const [result] = useState<AuditResult | null>(getStoredResult)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const router = useRouter()
+  const [result] = useState<AuditResult | null>(getStoredResult);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (!result) {
-      router.push("/audit")
+      router.push("/audit");
     }
-  }, [result, router])
+  }, [result, router]);
 
-  if (!result) return null
+  if (!result) return null;
 
   const totalMonthlySavings = result.recommendations.reduce(
-    (sum, r) => sum + (r.monthlySavings ?? 0), 0
-  )
+    (sum, r) => sum + (r.monthlySavings ?? 0),
+    0,
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,5 +99,5 @@ export default function ResultsPage() {
         onClose={() => setIsModalOpen(false)}
       />
     </div>
-  )
+  );
 }

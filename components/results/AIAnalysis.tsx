@@ -8,5 +8,5 @@ export default function AIAnalysis({ text }: { text: string }) {
         <p className="text-on-surface leading-relaxed">{text}</p>
       </div>
     </div>
-  )
+  );
 }

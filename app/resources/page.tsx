@@ -1,12 +1,13 @@
-import Link from "next/link"
-import TopBar from "@/components/layout/TopBar"
-import { FAQJsonLd } from "@/components/seo/JsonLd"
+import Link from "next/link";
+import TopBar from "@/components/layout/TopBar";
+import { FAQJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata = {
   title: "AI Tool Pricing Guide & Resources",
-  description: "Free guides on AI tool pricing, how to audit your developer tool subscriptions, and benchmarks for startup tech stacks in 2026.",
+  description:
+    "Free guides on AI tool pricing, how to audit your developer tool subscriptions, and benchmarks for startup tech stacks in 2026.",
   alternates: { canonical: "https://stackaudit.app/resources" },
-}
+};
 
 export default function ResourcesPage() {
   return (
@@ -15,51 +16,107 @@ export default function ResourcesPage() {
       <main className="max-w-4xl mx-auto px-4 py-24">
         <FAQJsonLd />
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-on-surface tracking-tight">Resources</h1>
-          <p className="text-on-surface-variant mt-2 text-lg">Guides and benchmarks for AI tool optimization</p>
+          <h1 className="text-4xl font-bold text-on-surface tracking-tight">
+            Resources
+          </h1>
+          <p className="text-on-surface-variant mt-2 text-lg">
+            Guides and benchmarks for AI tool optimization
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <Link href="/resources/cursor-vs-copilot" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
-            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">Cursor vs GitHub Copilot 2026</h3>
-            <p className="text-sm text-on-surface-variant">Side-by-side comparison for startup engineering teams.</p>
+          <Link
+            href="/resources/cursor-vs-copilot"
+            className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block"
+          >
+            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">
+              Cursor vs GitHub Copilot 2026
+            </h3>
+            <p className="text-sm text-on-surface-variant">
+              Side-by-side comparison for startup engineering teams.
+            </p>
           </Link>
-          <Link href="/resources/ai-tool-pricing-guide" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
-            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">AI Tool Pricing Guide 2026</h3>
-            <p className="text-sm text-on-surface-variant">Complete breakdown of every major AI tool pricing tier.</p>
+          <Link
+            href="/resources/ai-tool-pricing-guide"
+            className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block"
+          >
+            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">
+              AI Tool Pricing Guide 2026
+            </h3>
+            <p className="text-sm text-on-surface-variant">
+              Complete breakdown of every major AI tool pricing tier.
+            </p>
           </Link>
-          <Link href="/audit/sample" className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block">
-            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">How to Audit Your AI Spend</h3>
-            <p className="text-sm text-on-surface-variant">See a sample audit identifying waste in AI subscriptions.</p>
+          <Link
+            href="/audit/sample"
+            className="bg-surface border border-outline-variant rounded p-6 hover:border-outline transition-colors group block"
+          >
+            <h3 className="font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">
+              How to Audit Your AI Spend
+            </h3>
+            <p className="text-sm text-on-surface-variant">
+              See a sample audit identifying waste in AI subscriptions.
+            </p>
           </Link>
         </div>
 
         <div className="border-t border-outline-variant pt-12">
-          <h2 className="text-2xl font-bold text-on-surface mb-8">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-bold text-on-surface mb-8">
+            Frequently Asked Questions
+          </h2>
           <div className="space-y-6">
             <div>
-              <h4 className="font-bold text-on-surface mb-1">What is StackAudit?</h4>
-              <p className="text-on-surface-variant">StackAudit analyzes your current AI and developer tool subscriptions to identify unused seats, overlapping features, and better pricing tiers.</p>
+              <h4 className="font-bold text-on-surface mb-1">
+                What is StackAudit?
+              </h4>
+              <p className="text-on-surface-variant">
+                StackAudit analyzes your current AI and developer tool
+                subscriptions to identify unused seats, overlapping features,
+                and better pricing tiers.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-on-surface mb-1">How accurate is the AI spend analysis?</h4>
-              <p className="text-on-surface-variant">Our engine uses current 2026 pricing data and aggregates usage patterns from thousands of startups to provide highly accurate, actionable recommendations.</p>
+              <h4 className="font-bold text-on-surface mb-1">
+                How accurate is the AI spend analysis?
+              </h4>
+              <p className="text-on-surface-variant">
+                Our engine uses current 2026 pricing data and aggregates usage
+                patterns from thousands of startups to provide highly accurate,
+                actionable recommendations.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-on-surface mb-1">Do I need to connect my billing accounts?</h4>
-              <p className="text-on-surface-variant">No. StackAudit operates entirely on self-reported data. You just tell us what tools you use and your team size, and we calculate the rest.</p>
+              <h4 className="font-bold text-on-surface mb-1">
+                Do I need to connect my billing accounts?
+              </h4>
+              <p className="text-on-surface-variant">
+                No. StackAudit operates entirely on self-reported data. You just
+                tell us what tools you use and your team size, and we calculate
+                the rest.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-on-surface mb-1">What tools do you support?</h4>
-              <p className="text-on-surface-variant">We currently support major developer tools (Cursor, GitHub Copilot, Vercel), LLM APIs (OpenAI, Anthropic, Gemini), and core infrastructure tools (Datadog, AWS).</p>
+              <h4 className="font-bold text-on-surface mb-1">
+                What tools do you support?
+              </h4>
+              <p className="text-on-surface-variant">
+                We currently support major developer tools (Cursor, GitHub
+                Copilot, Vercel), LLM APIs (OpenAI, Anthropic, Gemini), and core
+                infrastructure tools (Datadog, AWS).
+              </p>
             </div>
             <div>
-              <h4 className="font-bold text-on-surface mb-1">Are my audit results private?</h4>
-              <p className="text-on-surface-variant">Yes. Your audit results are saved securely and are only accessible via the unique shareable link generated for you.</p>
+              <h4 className="font-bold text-on-surface mb-1">
+                Are my audit results private?
+              </h4>
+              <p className="text-on-surface-variant">
+                Yes. Your audit results are saved securely and are only
+                accessible via the unique shareable link generated for you.
+              </p>
             </div>
           </div>
         </div>
       </main>
     </div>
-  )
+  );
 }

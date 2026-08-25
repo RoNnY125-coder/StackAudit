@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -6,7 +6,7 @@ export default function Hero() {
       <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary font-medium text-sm mb-8 border border-primary/20 shadow-sm">
         Free for founders & dev teams
       </div>
-      
+
       <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-on-surface mb-6 leading-[1.1]">
         Stop overpaying for <br className="hidden md:block" />
         <span className="text-primary relative">
@@ -16,8 +16,10 @@ export default function Hero() {
       </h1>
 
       <p className="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-        The average startup wastes <strong className="text-on-surface">$800+/mo</strong> on redundant subscriptions. 
-        Audit your stack instantly and discover exactly what to cut, downgrade, or consolidate.
+        The average startup wastes{" "}
+        <strong className="text-on-surface">$800+/mo</strong> on redundant
+        subscriptions. Audit your stack instantly and discover exactly what to
+        cut, downgrade, or consolidate.
       </p>
 
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16">
@@ -26,7 +28,19 @@ export default function Hero() {
           className="w-full sm:w-auto bg-primary text-on-primary font-bold px-8 py-4 rounded-xl hover:bg-primary/90 transition-all active:scale-[0.98] shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
         >
           Audit My Stack
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            ></path>
+          </svg>
         </Link>
         <Link
           href="/audit/sample"
@@ -36,5 +50,5 @@ export default function Hero() {
         </Link>
       </div>
     </section>
-  )
+  );
 }

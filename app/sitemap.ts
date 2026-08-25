@@ -1,6 +1,6 @@
-import { MetadataRoute } from "next"
+import { MetadataRoute } from "next";
 
-const BASE = "https://stack-audit-ashy.vercel.app"
+const BASE = "https://stack-audit-ashy.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -40,5 +40,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
-  ]
+  ];
 }

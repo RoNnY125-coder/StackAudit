@@ -113,7 +113,6 @@
   --spacing-margin: 1.5rem;
 }
 
-
 @layer base {
   :root {
     color-scheme: dark;
@@ -133,14 +132,18 @@
 
 @layer utilities {
   .font-mono {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
   }
 }
 
 /* Ticker marquee animation */
 @keyframes ticker {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 .ticker-track {
   display: flex;
@@ -152,10 +155,9 @@
   animation-play-state: paused;
 }
 
-/* ── Print stylesheet ────────────────────────────────────────────────────────
+/* Print stylesheet 
    Used by the Export PDF button (window.print()) on the results page.
-   Hides UI chrome; shows only the audit content.
-────────────────────────────────────────────────────────────────────────── */
+   Hides UI chrome; shows only the audit content. */
 @media print {
   /* Hide navigation and interactive chrome */
   .print\:hidden {
@@ -166,10 +168,14 @@
   * {
     color-scheme: light;
   }
-  html, body {
+  html,
+  body {
     background: #ffffff !important;
     color: #111111 !important;
-    font-family: system-ui, -apple-system, sans-serif !important;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif !important;
     font-size: 12pt;
   }
 

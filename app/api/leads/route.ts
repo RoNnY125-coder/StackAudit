@@ -1,26 +1,28 @@
-import { NextResponse } from "next/server"
-import { Resend } from "resend"
-import { supabaseAdmin } from "@/lib/supabase"
-import { AuditResult, ToolRecommendation } from "@/lib/types"
+import { NextResponse } from "next/server";
+import { Resend } from "resend";
+import { supabaseAdmin } from "@/lib/supabase";
+import { AuditResult, ToolRecommendation } from "@/lib/types";
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function formatCurrency(n: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  }).format(n)
+  }).format(n);
 }
 
 function buildEmailHtml(email: string, auditData: AuditResult | null): string {
-  const monthly = auditData ? formatCurrency(auditData.totalMonthlySavings) : "—"
-  const annual = auditData ? formatCurrency(auditData.totalAnnualSavings) : "—"
+  const monthly = auditData
+    ? formatCurrency(auditData.totalMonthlySavings)
+    : "—";
+  const annual = auditData ? formatCurrency(auditData.totalAnnualSavings) : "—";
   const shareUrl = auditData
     ? `https://stack-audit-ashy.vercel.app/audit/${auditData.shareSlug}`
-    : "https://stack-audit-ashy.vercel.app"
+    : "https://stack-audit-ashy.vercel.app";
 
-  const rows = auditData?.recommendations ?? []
+  const rows = auditData?.recommendations ?? [];
 
   const tableRows = rows
     .map(
@@ -30,9 +32,9 @@ function buildEmailHtml(email: string, auditData: AuditResult | null): string {
         <td style="padding:8px 12px;border-bottom:1px solid #3c4947;">${r.currentPlan}</td>
         <td style="padding:8px 12px;border-bottom:1px solid #3c4947;">${r.recommendedAction}</td>
         <td style="padding:8px 12px;border-bottom:1px solid #3c4947;color:#4fdbc8;font-weight:bold;">+${formatCurrency(r.monthlySavings)}/mo</td>
-      </tr>`
+      </tr>`,
     )
-    .join("")
+    .join("");
 
   return `
 <!DOCTYPE html>
@@ -55,7 +57,9 @@ function buildEmailHtml(email: string, auditData: AuditResult | null): string {
     </div>
 
     <!-- Recommendations table -->
-    ${rows.length > 0 ? `
+    ${
+      rows.length > 0
+        ? `
     <div style="margin-bottom:32px;">
       <p style="font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#4fdbc8;margin:0 0 12px;">Recommendations</p>
       <table style="width:100%;border-collapse:collapse;background:#1a211f;border:1px solid #3c4947;border-radius:8px;overflow:hidden;">
@@ -70,17 +74,23 @@ function buildEmailHtml(email: string, auditData: AuditResult | null): string {
         <tbody>${tableRows}</tbody>
       </table>
     </div>
-    ` : ""}
+    `
+        : ""
+    }
 
     <!-- AI Analysis -->
-    ${auditData?.aiAnalysis ? `
+    ${
+      auditData?.aiAnalysis
+        ? `
     <div style="margin-bottom:32px;">
       <p style="font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#4fdbc8;margin:0 0 12px;">✦ AI Analysis</p>
       <div style="background:#1a211f;border-left:3px solid #859490;border-radius:0 8px 8px 0;padding:16px;">
         <p style="color:#dde4e1;line-height:1.6;margin:0;">${auditData.aiAnalysis}</p>
       </div>
     </div>
-    ` : ""}
+    `
+        : ""
+    }
 
     <!-- Share link -->
     <div style="background:#1a211f;border:1px solid #3c4947;border-radius:8px;padding:16px;margin-bottom:32px;">
@@ -98,47 +108,47 @@ function buildEmailHtml(email: string, auditData: AuditResult | null): string {
   </div>
 </body>
 </html>
-`
+`;
 }
 
 export async function POST(request: Request) {
   try {
-    const { email, company, role, website, auditData } = await request.json()
+    const { email, company, role, website, auditData } = await request.json();
 
     // Honeypot — bots fill hidden fields
     if (website) {
-      return NextResponse.json({ success: true })
+      return NextResponse.json({ success: true });
     }
 
     if (!email) {
-      return NextResponse.json({ error: "Email required" }, { status: 400 })
+      return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
     // Save lead to Supabase
     const { error: dbError } = await supabaseAdmin
       .from("leads")
-      .insert({ email, company_name: company, role })
+      .insert({ email, company_name: company, role });
 
     if (dbError) {
-      console.error("Supabase error:", dbError)
+      console.error("Supabase error:", dbError);
     }
 
     // Send email via Resend — best effort, don't block response
     try {
-      const html = buildEmailHtml(email, auditData ?? null)
+      const html = buildEmailHtml(email, auditData ?? null);
       await resend.emails.send({
         from: "StackAudit <onboarding@resend.dev>",
         to: email,
         subject: "Your StackAudit Report",
         html,
-      })
+      });
     } catch (emailError) {
-      console.error("Resend error:", emailError)
+      console.error("Resend error:", emailError);
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: "Failed to save" }, { status: 500 })
+    console.error(error);
+    return NextResponse.json({ error: "Failed to save" }, { status: 500 });
   }
 }

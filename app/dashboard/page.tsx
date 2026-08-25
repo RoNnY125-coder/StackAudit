@@ -1,13 +1,13 @@
-import Link from "next/link"
-import TopBar from "@/components/layout/TopBar"
-import { supabaseAdmin } from "@/lib/supabase"
+import Link from "next/link";
+import TopBar from "@/components/layout/TopBar";
+import { supabaseAdmin } from "@/lib/supabase";
 
 interface AuditRow {
-  id: string
-  created_at: string
-  tools_json: { monthlySpend?: number; id?: string }[]
-  savings_json: { monthlySavings?: number; annualSavings?: number }[]
-  total_monthly_savings: number
+  id: string;
+  created_at: string;
+  tools_json: { monthlySpend?: number; id?: string }[];
+  savings_json: { monthlySavings?: number; annualSavings?: number }[];
+  total_monthly_savings: number;
 }
 
 function formatDate(iso: string) {
@@ -15,7 +15,7 @@ function formatDate(iso: string) {
     month: "long",
     day: "numeric",
     year: "numeric",
-  })
+  });
 }
 
 function formatCurrency(n: number) {
@@ -23,26 +23,26 @@ function formatCurrency(n: number) {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  }).format(n)
+  }).format(n);
 }
 
 // Recompute savings from savings_json rows — never trust the stored aggregate
 function recomputeSavings(row: AuditRow): number {
-  const recs = Array.isArray(row.savings_json) ? row.savings_json : []
-  const computed = recs.reduce((sum, r) => sum + (r.monthlySavings ?? 0), 0)
-  return computed > 0 ? computed : (row.total_monthly_savings ?? 0)
+  const recs = Array.isArray(row.savings_json) ? row.savings_json : [];
+  const computed = recs.reduce((sum, r) => sum + (r.monthlySavings ?? 0), 0);
+  return computed > 0 ? computed : (row.total_monthly_savings ?? 0);
 }
 
 // Count only tools the user actually activated (monthlySpend > 0)
 function countActiveTools(row: AuditRow): number {
-  const tools = Array.isArray(row.tools_json) ? row.tools_json : []
-  return tools.filter((t) => (t.monthlySpend ?? 0) > 0).length
+  const tools = Array.isArray(row.tools_json) ? row.tools_json : [];
+  return tools.filter((t) => (t.monthlySpend ?? 0) > 0).length;
 }
 
 // Sum only active tool spend
 function sumTotalSpend(row: AuditRow): number {
-  const tools = Array.isArray(row.tools_json) ? row.tools_json : []
-  return tools.reduce((sum, t) => sum + (t.monthlySpend ?? 0), 0)
+  const tools = Array.isArray(row.tools_json) ? row.tools_json : [];
+  return tools.reduce((sum, t) => sum + (t.monthlySpend ?? 0), 0);
 }
 
 export default async function DashboardPage() {
@@ -50,18 +50,18 @@ export default async function DashboardPage() {
     .from("audits")
     .select("id, created_at, tools_json, savings_json, total_monthly_savings")
     .order("created_at", { ascending: false })
-    .limit(10)
+    .limit(10);
 
   if (error) {
-    console.error("[Dashboard] Supabase error:", error)
+    console.error("[Dashboard] Supabase error:", error);
   }
 
-  const rows = (audits ?? []) as AuditRow[]
-  const latest = rows[0] ?? null
+  const rows = (audits ?? []) as AuditRow[];
+  const latest = rows[0] ?? null;
 
-  const latestSavings = latest ? recomputeSavings(latest) : 0
-  const latestSpend = latest ? sumTotalSpend(latest) : 0
-  const latestToolCount = latest ? countActiveTools(latest) : 0
+  const latestSavings = latest ? recomputeSavings(latest) : 0;
+  const latestSpend = latest ? sumTotalSpend(latest) : 0;
+  const latestToolCount = latest ? countActiveTools(latest) : 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -119,9 +119,7 @@ export default async function DashboardPage() {
             <div className="bg-surface border border-outline-variant rounded divide-y divide-outline-variant">
               {rows.length === 0 ? (
                 <div className="p-8 text-center">
-                  <p className="text-on-surface-variant mb-4">
-                    No audits yet.
-                  </p>
+                  <p className="text-on-surface-variant mb-4">No audits yet.</p>
                   <Link
                     href="/audit"
                     className="text-primary hover:underline font-bold text-sm"
@@ -131,8 +129,8 @@ export default async function DashboardPage() {
                 </div>
               ) : (
                 rows.map((audit) => {
-                  const savings = recomputeSavings(audit)
-                  const toolCount = countActiveTools(audit)
+                  const savings = recomputeSavings(audit);
+                  const toolCount = countActiveTools(audit);
                   return (
                     <div
                       key={audit.id}
@@ -163,7 +161,7 @@ export default async function DashboardPage() {
                         </Link>
                       </div>
                     </div>
-                  )
+                  );
                 })
               )}
             </div>
@@ -192,5 +190,5 @@ export default async function DashboardPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
